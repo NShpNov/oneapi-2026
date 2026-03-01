@@ -65,5 +65,5 @@ std::vector<float> JacobiAccONEAPI(const std::vector<float> a,
   sycl::free(device_previous, queue);
   sycl::free(device_error, queue);
 
-  return result;
+  return result; //
 }
