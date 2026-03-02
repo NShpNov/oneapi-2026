@@ -512,8 +512,8 @@ std::vector<float> JacobiKokkos(
 |-----|----|------|----|
 |**REF**|**REF**|**0.2749**|**-**|
 |3822B1FI1|beskhmelnova_kseniya|0.3462|1|
+|3822B1FI1|drozhdinov_dmitriy|0.5052|2|
 |3822B1FI1|chistov_alexey|TOO SLOW|-|
-|3822B1FI1|drozhdinov_dmitriy|BUILD FAILED|-|
 |3822B1FI3|lopatin_ilya|BUILD FAILED|-|
 |3822B1FI3|kolodkin_grigorii|BUILD FAILED|-|
 
@@ -559,7 +559,7 @@ std::vector<float> JacobiKokkos(
 |-----|----|------|-----|
 |3822B1FI1|beskhmelnova_kseniya|5/9|309|
 |3822B1FI1|chistov_alexey|2/9|126|
-|3822B1FI1|drozhdinov_dmitriy|2/9|111|
+|3822B1FI1|drozhdinov_dmitriy|3/9|173|
 |3822B1FI1|kabalova_valeria|2/9|117|
 |3822B1FI1|rezantseva_anastasia|2/9|114|
 |3822B1FI1|shulpin_ilya|1/9|56|
