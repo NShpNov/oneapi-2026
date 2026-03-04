@@ -1,4 +1,5 @@
 #include "dev_jacobi_oneapi.h"
+#include <cmath>
 
 std::vector<float> JacobiDevONEAPI(const std::vector<float>& a,
                                          const std::vector<float>& b,
@@ -62,4 +63,5 @@ std::vector<float> JacobiDevONEAPI(const std::vector<float>& a,
     sycl::free(x_new_dev, q);
 
     return x_host;
+
 }
