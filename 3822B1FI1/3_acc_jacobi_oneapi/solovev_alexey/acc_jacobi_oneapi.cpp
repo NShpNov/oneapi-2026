@@ -3,12 +3,15 @@
 #include <utility>
 
 std::vector<float> JacobiAccONEAPI(
-    const std::vector<float>& a, const std::vector<float>& b,
-    float accuracy, sycl::device device) {
+    const std::vector<float>& a,
+    const std::vector<float>& b,
+    float accuracy,
+    sycl::device device) {
 
     const size_t n = b.size();
+    const float accuracy_sq = accuracy * accuracy;
 
-    sycl::queue q(device);
+    sycl::queue q(device, sycl::property::queue::in_order{});
 
     std::vector<float> x0(n, 0.0f);
 
@@ -48,18 +51,20 @@ std::vector<float> JacobiAccONEAPI(
             auto x_acc = Xcurr.get_access<sycl::access::mode::read>(h);
             auto xn_acc = Xnext.get_access<sycl::access::mode::read>(h);
 
-            auto red = sycl::reduction(Diff, h, sycl::maximum<float>());
+            auto red = sycl::reduction(Diff, h, sycl::plus<float>());
 
-            h.parallel_for(sycl::range<1>(n), red,
-                [=](sycl::id<1> id, auto& max_diff) {
-                    float d = sycl::fabs(xn_acc[id] - x_acc[id]);
-                    max_diff.combine(d);
+            h.parallel_for(
+                sycl::range<1>(n),
+                red,
+                [=](sycl::id<1> id, auto& sum) {
+                    float diff = xn_acc[id] - x_acc[id];
+                    sum += diff * diff;
                 });
         }).wait();
 
         {
             auto host_diff = Diff.get_host_access();
-            if (host_diff[0] < accuracy)
+            if (host_diff[0] < accuracy_sq)
                 break;
         }
 
