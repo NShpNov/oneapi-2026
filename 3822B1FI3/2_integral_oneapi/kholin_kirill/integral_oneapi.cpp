@@ -1,31 +1,25 @@
 #include "integral_oneapi.h"
 
-#include <cmath>
-
 float IntegralONEAPI(float start, float end, int count, sycl::device device) {
+  float local_res = .0f;
   const float delta = (end - start) / count;
-  const float delta_product = delta * delta;
 
-  double result = 0.0;
-  sycl::queue queue(device);
-  sycl::buffer<double> result_buf(&result, 1);
+  sycl::queue q(device);
 
-  queue.submit([&](sycl::handler &cgh) {
-        auto reduction = sycl::reduction(result_buf, cgh, sycl::plus<double>());
+  {
+    sycl::buffer<float> sum_buf(&local_res, 1);
 
-        cgh.parallel_for(
-            sycl::range<2>(count, count), reduction,
-            [=](sycl::id<2> idx, auto &sum) {
-              const float x =
-                  start + delta * (static_cast<float>(idx[0]) + 0.5f);
-              const float y =
-                  start + delta * (static_cast<float>(idx[1]) + 0.5f);
+    q.submit([&](sycl::handler &cgh) {
+       auto reduction = sycl::reduction(sum_buf, cgh, sycl::plus<>());
 
-              const float value = sycl::sin(x) * sycl::cos(y);
+       cgh.parallel_for(sycl::range<2>(count, count), reduction,
+                        [=](sycl::id<2> id, auto &sum) {
+                          float x = start + delta * (id.get(0) + 0.5f);
+                          float y = start + delta * (id.get(1) + 0.5f);
+                          sum += sycl::sin(x) * sycl::cos(y);
+                        });
+     }).wait();
+  }
 
-              sum += static_cast<double>(value);
-            });
-      }).wait();
-
-  return static_cast<float>(result * delta_product);
+  return local_res * delta * delta;
 }
