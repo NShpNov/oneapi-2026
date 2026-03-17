@@ -2,6 +2,7 @@
 #define __JACOBI_KOKKOS_H
 
 #include <vector>
+#include <utility>
 
 #include <Kokkos_Core.hpp>
 

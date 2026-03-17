@@ -62,7 +62,7 @@ std::vector<float> JacobiKokkos(
             break;
         }
 
-        Kokkos::swap(x_curr, x_next);
+        std::swap(x_curr, x_next);
     }
 
     std::vector<float> solution(n);
