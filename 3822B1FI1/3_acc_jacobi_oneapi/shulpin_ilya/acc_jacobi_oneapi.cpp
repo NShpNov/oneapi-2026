@@ -33,6 +33,8 @@ std::vector<float> JacobiAccONEAPI(
         {
             float max_diff = 0.0f;
 
+            sycl::buffer<float, 1> diff_buf{&max_diff, sycl::range<1>{1}};
+
             q.submit([&](sycl::handler& h)
             {
                 auto A_acc   = A_buf.get_access<sycl::access::mode::read>(h);
@@ -40,7 +42,7 @@ std::vector<float> JacobiAccONEAPI(
                 auto x_cur_acc = x_current->get_access<sycl::access::mode::read>(h);
                 auto x_new_acc = x_next->get_access<sycl::access::mode::write>(h);
 
-                auto max_red = sycl::reduction(max_diff, sycl::maximum<float>());
+                auto max_red = sycl::reduction(diff_buf, h, sycl::maximum<float>());
 
                 h.parallel_for(sycl::range<1>{n},
                     max_red,
