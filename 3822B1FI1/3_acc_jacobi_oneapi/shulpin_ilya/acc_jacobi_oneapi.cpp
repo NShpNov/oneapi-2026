@@ -27,25 +27,20 @@ std::vector<float> JacobiAccONEAPI(
         sycl::buffer<float, 1>* x_current = &x1_buf;
         sycl::buffer<float, 1>* x_next = &x2_buf;
 
-        bool converged = false;
-
         for (int iter = 0; iter < ITERATIONS; ++iter)
         {
-            float max_diff = 0.0f;
-
-            sycl::buffer<float, 1> diff_buf{&max_diff, sycl::range<1>{1}};
+            sycl::buffer<float, 1> diff_buf{sycl::range<1>{1}};
 
             q.submit([&](sycl::handler& h)
             {
-                auto A_acc   = A_buf.get_access<sycl::access::mode::read>(h);
-                auto b_acc   = b_buf.get_access<sycl::access::mode::read>(h);
+                auto A_acc = A_buf.get_access<sycl::access::mode::read>(h);
+                auto b_acc = b_buf.get_access<sycl::access::mode::read>(h);
                 auto x_cur_acc = x_current->get_access<sycl::access::mode::read>(h);
                 auto x_new_acc = x_next->get_access<sycl::access::mode::write>(h);
 
                 auto max_red = sycl::reduction(diff_buf, h, sycl::maximum<float>());
 
-                h.parallel_for(sycl::range<1>{n},
-                    max_red,
+                h.parallel_for(sycl::range<1>{n}, max_red,
                     [=](sycl::id<1> idx, auto& local_max)
                     {
                         const size_t i = idx[0];
@@ -59,34 +54,44 @@ std::vector<float> JacobiAccONEAPI(
                         }
 
                         float diag = A_acc[i * n + i];
-                        if (std::abs(diag) < 1e-12f) {
-                            x_new_acc[i] = x_cur_acc[i];
+                        float new_val;
+
+                        if (sycl::fabs(diag) < 1e-12f) {
+                            new_val = x_cur_acc[i];
                         } else {
-                            x_new_acc[i] = (b_acc[i] - sum) / diag;
+                            new_val = (b_acc[i] - sum) / diag;
                         }
 
-                        float diff = sycl::fabs(x_new_acc[i] - x_cur_acc[i]);
+                        x_new_acc[i] = new_val;
+
+                        float diff = sycl::fabs(new_val - x_cur_acc[i]);
                         local_max.combine(diff);
                     });
             }).wait();
 
-            if (max_diff < accuracy) {
-                converged = true;
-                break;
+            float max_diff = 0.0f;
+            {
+                sycl::host_accessor diff_acc(diff_buf, sycl::read_only);
+                max_diff = diff_acc[0];
             }
 
             std::swap(x_current, x_next);
+
+            if (max_diff < accuracy) {
+                break;
+            }
         }
 
-        sycl::host_accessor<float, 1, sycl::access::mode::read> result_acc(*x_current);
+        sycl::host_accessor result_acc(*x_current, sycl::read_only);
         std::vector<float> solution(n);
+
         for (size_t i = 0; i < n; ++i) {
             solution[i] = result_acc[i];
         }
 
         return solution;
 
-    } catch (sycl::exception const& e) {
+    } catch (sycl::exception const&) {
         return {};
     }
 }
