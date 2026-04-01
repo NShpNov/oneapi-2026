@@ -537,6 +537,7 @@ std::vector<float> JacobiKokkos(
 |3822B1FI3|lysov_ivan|0.2813|5|
 |3822B1FI2|bessonov_egor|0.2871|1|
 |3822B1FI3|chizhov_maxim|0.2964|6|
+|3822B1FI1|ionova_ekaterina|0.3151|8|
 |3822B1FI3|kolodkin_grigorii|0.3235|1|
 |3822B1FI3|kholin_kirill|0.3262|4|
 |3822B1FI3|frolova_elizaveta|0.3264|2|
@@ -549,7 +550,6 @@ std::vector<float> JacobiKokkos(
 |3822B1FI2|yasakova_tanya|0.3980|2|
 |3822B1FI1|drozhdinov_dmitriy|0.5052|2|
 |3822B1FI1|mironov_arseniy|TEST FAILED|-|
-|3822B1FI1|ionova_ekaterina|TEST FAILED|-|
 |3822B1FI3|ekaterina_kozlova|BUILD FAILED|-|
 |3822B1FI2|khokhlov_andrey|BUILD FAILED|-|
 
@@ -641,8 +641,8 @@ std::vector<float> JacobiKokkos(
 |3822B1FI3|kolodkin_grigorii|0.4450|1|
 |3822B1FI3|frolova_elizaveta|0.4468|2|
 |3822B1FI3|kholin_kirill|0.4514|6|
+|3822B1FI1|ionova_ekaterina|0.4525|8|
 |3822B1FI3|lysov_ivan|0.4583|5|
-|3822B1FI1|ionova_ekaterina|TEST FAILED|-|
 
 ## 8_integral_kokkos (65536 elements)
 |Group|Name|Result|Rank|
@@ -687,18 +687,18 @@ std::vector<float> JacobiKokkos(
 ## 3822B1FI1
 |Group|Name|Passed|Score|
 |-----|----|------|-----|
-|3822B1FI1|beskhmelnova_kseniya|**9/9**|**533**|
-|3822B1FI1|chistov_alexey|**9/9**|**541**|
-|3822B1FI1|drozhdinov_dmitriy|8/9|441|
-|3822B1FI1|ionova_ekaterina|7/9|372|
+|3822B1FI1|beskhmelnova_kseniya|**9/9**|**532**|
+|3822B1FI1|chistov_alexey|**9/9**|**540**|
+|3822B1FI1|drozhdinov_dmitriy|8/9|440|
+|3822B1FI1|ionova_ekaterina|**9/9**|**478**|
 |3822B1FI1|kabalova_valeria|2/9|116|
 |3822B1FI1|mironov_arseniy|4/9|201|
-|3822B1FI1|rezantseva_anastasia|**9/9**|**522**|
+|3822B1FI1|rezantseva_anastasia|**9/9**|**521**|
 |3822B1FI1|shulpin_ilya|**9/9**|**493**|
-|3822B1FI1|shurigin_sergey|**9/9**|**503**|
-|3822B1FI1|solovev_alexey|**9/9**|**516**|
+|3822B1FI1|shurigin_sergey|**9/9**|**502**|
+|3822B1FI1|solovev_alexey|**9/9**|**515**|
 
-Passed: 6
+Passed: 7
 
 ## 3822B1FI2
 |Group|Name|Passed|Score|
@@ -724,7 +724,7 @@ Passed: 2
 
 Passed: 4
 
-**Total Passed: 12**
+**Total Passed: 13**
 
 ---
 *Maximum Score: 576 (64 per task)*
