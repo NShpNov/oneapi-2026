@@ -29,7 +29,6 @@ std::vector<float> JacobiAccONEAPI(
                     size_t row = i[0];
                     float sum = 0.0f;
                     float a_ii = 0.0f;
-   			a_ij * x_j для j != i
                     for (size_t j = 0; j < n; j++) {
                         if (j != row) {
                             sum += acc_a[row * n + j] * acc_x_curr[j];
