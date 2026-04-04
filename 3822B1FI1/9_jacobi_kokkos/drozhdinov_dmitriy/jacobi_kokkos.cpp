@@ -58,6 +58,7 @@ std::vector<float> JacobiKokkos(
       Kokkos::Max<float>(error));
 
     if (error < accuracy) {
+	  Kokkos::deep_copy(prev_dev, curr_dev);
       break;
     }
 
