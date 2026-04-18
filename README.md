@@ -483,6 +483,7 @@ std::vector<float> JacobiKokkos(
 |3822B1FI1|kurakin_matvey|0.0422|12|
 |3822B1FI3|kudryashova_irina|0.0615|9|
 |3822B1FI1|chistov_alexey|0.0672|1|
+|3822B1FI3|shmidt_olga|0.0676|11|
 |3822B1FI1|shulpin_ilya|0.0710|8|
 |3822B1FI1|beskhmelnova_kseniya|0.0844|6|
 |3822B1FI1|grudzin_konstantin|0.1183|11|
@@ -523,6 +524,7 @@ std::vector<float> JacobiKokkos(
 |**REF**|**REF**|**0.4723**|**-**|
 |3822B1FI1|rezantseva_anastasia|0.5868|5|
 |3822B1FI3|kudryashova_irina|0.8364|8|
+|3822B1FI3|shmidt_olga|0.8368|10|
 |3822B1FI2|yasakova_tanya|0.8381|2|
 |3822B1FI3|frolova_elizaveta|0.8388|3|
 |3822B1FI2|plekhanov_daniil|0.8393|5|
@@ -814,16 +816,17 @@ Passed: 4
 ## 3822B1FI3
 |Group|Name|Passed|Score|
 |-----|----|------|-----|
-|3822B1FI3|chizhov_maxim|**9/9**|**482**|
-|3822B1FI3|ekaterina_kozlova|**9/9**|**506**|
-|3822B1FI3|frolova_elizaveta|**9/9**|**523**|
-|3822B1FI3|kholin_kirill|**9/9**|**504**|
-|3822B1FI3|kolodkin_grigorii|**9/9**|**527**|
-|3822B1FI3|koshkin_nikita|1/9|54|
+|3822B1FI3|chizhov_maxim|**9/9**|**480**|
+|3822B1FI3|ekaterina_kozlova|**9/9**|**504**|
+|3822B1FI3|frolova_elizaveta|**9/9**|**521**|
+|3822B1FI3|kholin_kirill|**9/9**|**502**|
+|3822B1FI3|kolodkin_grigorii|**9/9**|**525**|
+|3822B1FI3|koshkin_nikita|1/9|53|
 |3822B1FI3|kudryashova_irina|8/9|440|
-|3822B1FI3|lopatin_ilya|**9/9**|**531**|
-|3822B1FI3|lysov_ivan|**9/9**|**501**|
-|3822B1FI3|sozonov_ilya|5/9|272|
+|3822B1FI3|lopatin_ilya|**9/9**|**529**|
+|3822B1FI3|lysov_ivan|**9/9**|**499**|
+|3822B1FI3|shmidt_olga|2/9|106|
+|3822B1FI3|sozonov_ilya|5/9|271|
 
 Passed: 7
 
