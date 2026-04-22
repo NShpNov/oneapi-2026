@@ -491,6 +491,7 @@ std::vector<float> JacobiKokkos(
 |3822B1FI2|vyunov_danila|0.1202|8|
 |3822B1FI2|vyunova_ekaterina|0.1272|7|
 |3822B1FI2|dormidontov_egor|0.1420|9|
+|3822B1FI2|shkurinskaya_elena|0.1428|10|
 |3822B1FI1|ivanov_mikhail|0.1468|14|
 |3822B1FI2|plekhanov_daniil|0.1499|6|
 |3822B1FI2|khokhlov_andrey|0.1532|4|
@@ -532,6 +533,7 @@ std::vector<float> JacobiKokkos(
 |3822B1FI3|frolova_elizaveta|0.8388|3|
 |3822B1FI2|plekhanov_daniil|0.8393|5|
 |3822B1FI2|dormidontov_egor|0.8407|8|
+|3822B1FI2|shkurinskaya_elena|0.8412|9|
 |3822B1FI1|shurigin_sergey|0.8417|7|
 |3822B1FI3|kolodkin_grigorii|0.8418|2|
 |3822B1FI1|beskhmelnova_kseniya|0.8425|2|
@@ -577,6 +579,7 @@ std::vector<float> JacobiKokkos(
 |3822B1FI1|kurakin_matvey|0.2979|10|
 |3822B1FI1|ionova_ekaterina|0.3151|8|
 |3822B1FI2|plekhanov_daniil|0.3158|5|
+|3822B1FI2|shkurinskaya_elena|0.3190|8|
 |3822B1FI3|kolodkin_grigorii|0.3235|1|
 |3822B1FI3|kholin_kirill|0.3262|4|
 |3822B1FI3|frolova_elizaveta|0.3264|2|
@@ -619,6 +622,7 @@ std::vector<float> JacobiKokkos(
 |3822B1FI1|kuznetsov_mikhail|0.3006|13|
 |3822B1FI3|lopatin_ilya|0.3083|3|
 |3822B1FI3|kolodkin_grigorii|0.3165|1|
+|3822B1FI2|shkurinskaya_elena|0.3225|6|
 |3822B1FI3|kholin_kirill|0.3246|4|
 |3822B1FI3|ekaterina_kozlova|0.3271|6|
 |3822B1FI3|lysov_ivan|0.3307|5|
@@ -665,6 +669,7 @@ std::vector<float> JacobiKokkos(
 |3822B1FI3|kholin_kirill|0.3080|5|
 |3822B1FI1|drozhdinov_dmitriy|0.3305|4|
 |3822B1FI1|solovev_alexey|0.3317|3|
+|3822B1FI2|shkurinskaya_elena|0.3454|8|
 |3822B1FI1|beskhmelnova_kseniya|0.3483|2|
 |3822B1FI2|yasakova_tanya|0.3532|2|
 |3822B1FI3|lopatin_ilya|0.3664|3|
@@ -684,6 +689,7 @@ std::vector<float> JacobiKokkos(
 |3822B1FI2|guseynov_emil|0.8647|4|
 |3822B1FI1|kuznetsov_mikhail|0.8693|14|
 |3822B1FI3|shmidt_olga|0.8705|10|
+|3822B1FI2|shkurinskaya_elena|0.8731|8|
 |3822B1FI2|khokhlov_andrey|0.8738|3|
 |3822B1FI1|rezantseva_anastasia|0.8756|5|
 |3822B1FI2|vyunova_ekaterina|0.8769|6|
@@ -718,6 +724,7 @@ std::vector<float> JacobiKokkos(
 |Group|Name|Result|Rank|
 |-----|----|------|----|
 |3822B1FI3|sozonov_ilya|0.2642|9|
+|3822B1FI2|shkurinskaya_elena|0.2712|8|
 |3822B1FI1|ivanov_mikhail|0.2748|11|
 |3822B1FI1|kurakin_matvey|0.2838|9|
 |3822B1FI3|kudryashova_irina|0.2853|8|
@@ -775,14 +782,15 @@ std::vector<float> JacobiKokkos(
 |3822B1FI2|khokhlov_andrey|2.3227|4|
 |3822B1FI1|vershinina_olga|2.3228|13|
 |3822B1FI1|ionova_ekaterina|2.3228|6|
-|3822B1FI2|bessonov_egor|2.3230|2|
 |3822B1FI1|drozhdinov_dmitriy|2.3230|7|
+|3822B1FI2|bessonov_egor|2.3230|2|
 |3822B1FI1|shulpin_ilya|2.9876|4|
 |3822B1FI3|koshkin_nikita|2.9971|10|
 |3822B1FI2|vyunova_ekaterina|2.9971|6|
+|3822B1FI1|mironov_arseniy|2.9993|10|
 |3822B1FI2|guseynov_emil|2.9993|3|
 |3822B1FI2|vyunov_danila|2.9993|7|
-|3822B1FI1|mironov_arseniy|2.9993|10|
+|3822B1FI2|shkurinskaya_elena|2.9993|8|
 |3822B1FI1|kurakin_matvey|2.9994|9|
 |3822B1FI1|shurigin_sergey|2.9995|8|
 |3822B1FI1|ivanov_mikhail|2.9996|12|
@@ -811,6 +819,7 @@ std::vector<float> JacobiKokkos(
 |3822B1FI1|beskhmelnova_kseniya|0.3214|1|
 |3822B1FI3|kholin_kirill|0.3248|5|
 |3822B1FI3|ekaterina_kozlova|0.3293|4|
+|3822B1FI2|shkurinskaya_elena|0.3314|7|
 |3822B1FI3|frolova_elizaveta|0.3331|2|
 |3822B1FI1|rezantseva_anastasia|0.3360|4|
 |3822B1FI2|yasakova_tanya|0.3641|1|
@@ -846,17 +855,18 @@ Passed: 11
 ## 3822B1FI2
 |Group|Name|Passed|Score|
 |-----|----|------|-----|
-|3822B1FI2|bessonov_egor|**9/9**|**538**|
-|3822B1FI2|dormidontov_egor|5/9|282|
-|3822B1FI2|guseynov_emil|7/9|408|
-|3822B1FI2|khokhlov_andrey|**9/9**|**534**|
-|3822B1FI2|plekhanov_daniil|**9/9**|**517**|
-|3822B1FI2|sdobnov_vladimir|2/9|110|
-|3822B1FI2|vyunov_danila|6/9|326|
-|3822B1FI2|vyunova_ekaterina|7/9|394|
-|3822B1FI2|yasakova_tanya|**9/9**|**535**|
+|3822B1FI2|bessonov_egor|**9/9**|**534**|
+|3822B1FI2|dormidontov_egor|5/9|281|
+|3822B1FI2|guseynov_emil|7/9|405|
+|3822B1FI2|khokhlov_andrey|**9/9**|**529**|
+|3822B1FI2|plekhanov_daniil|**9/9**|**514**|
+|3822B1FI2|sdobnov_vladimir|2/9|108|
+|3822B1FI2|shkurinskaya_elena|**9/9**|**481**|
+|3822B1FI2|vyunov_danila|6/9|323|
+|3822B1FI2|vyunova_ekaterina|7/9|391|
+|3822B1FI2|yasakova_tanya|**9/9**|**528**|
 
-Passed: 4
+Passed: 5
 
 ## 3822B1FI3
 |Group|Name|Passed|Score|
@@ -875,7 +885,7 @@ Passed: 4
 
 Passed: 7
 
-**Total Passed: 22**
+**Total Passed: 23**
 
 ---
 *Maximum Score: 576 (64 per task)*
