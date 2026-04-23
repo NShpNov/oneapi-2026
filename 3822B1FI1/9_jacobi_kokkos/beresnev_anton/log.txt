@@ -1,0 +1,95 @@
+In file included from /home/crazyproger/sandbox/oneapi-2026/3822B1FI1/9_jacobi_kokkos/beresnev_anton/jacobi_kokkos.cpp:1:
+In file included from /home/crazyproger/sandbox/oneapi-2026/3822B1FI1/9_jacobi_kokkos/beresnev_anton/jacobi_kokkos.h:5:
+In file included from /home/crazyproger/kokkos/build/install/include/Kokkos_Core.hpp:45:
+In file included from /home/crazyproger/kokkos/build/install/include/KokkosCore_Config_DeclareBackend.hpp:22:
+In file included from /home/crazyproger/kokkos/build/install/include/decl/Kokkos_Declare_OPENMP.hpp:21:
+In file included from /home/crazyproger/kokkos/build/install/include/OpenMP/Kokkos_OpenMP.hpp:32:
+In file included from /home/crazyproger/kokkos/build/install/include/Kokkos_Parallel.hpp:31:
+In file included from /home/crazyproger/kokkos/build/install/include/Kokkos_View.hpp:28:
+In file included from /home/crazyproger/kokkos/build/install/include/View/Kokkos_BasicView.hpp:27:
+/home/crazyproger/kokkos/build/install/include/View/Kokkos_ViewAlloc.hpp:147:11: error: no viable constructor or deduction guide for deduction of template arguments of 'ZeroMemset'
+  147 |     (void)ZeroMemset(space, ptr, n * sizeof(ValueType));
+      |           ^
+/home/crazyproger/kokkos/build/install/include/View/Kokkos_ViewAlloc.hpp:163:7: note: in instantiation of member function 'Kokkos::Impl::ViewValueFunctor<Kokkos::Device<Kokkos::SYCL, Kokkos::SYCLDeviceUSMSpace>, const float>::zero_memset_implementation' requested here
+  163 |       zero_memset_implementation();
+      |       ^
+/home/crazyproger/kokkos/build/install/include/View/Kokkos_ViewMapping.hpp:2854:27: note: in instantiation of member function 'Kokkos::Impl::ViewValueFunctor<Kokkos::Device<Kokkos::SYCL, Kokkos::SYCLDeviceUSMSpace>, const float>::construct_shared_allocation' requested here
+ 2854 |         record->m_destroy.construct_shared_allocation();
+      |                           ^
+/home/crazyproger/kokkos/build/install/include/View/Kokkos_ViewLegacy.hpp:1024:60: note: in instantiation of function template specialization 'Kokkos::Impl::ViewMapping<Kokkos::ViewTraits<const float **, Kokkos::SYCLDeviceUSMSpace>, void>::allocate_shared<std::basic_string<char>, Kokkos::SYCLDeviceUSMSpace, Kokkos::SYCL>' requested here
+ 1024 |     Kokkos::Impl::SharedAllocationRecord<>* record = m_map.allocate_shared(
+      |                                                            ^
+/home/crazyproger/kokkos/build/install/include/View/Kokkos_ViewLegacy.hpp:1137:9: note: in instantiation of function template specialization 'Kokkos::View<const float **, Kokkos::SYCLDeviceUSMSpace>::View<std::basic_string<char>>' requested here
+ 1137 |       : View(Impl::ViewCtorProp<std::string>(arg_label),
+      |         ^
+/home/crazyproger/sandbox/oneapi-2026/3822B1FI1/9_jacobi_kokkos/beresnev_anton/jacobi_kokkos.cpp:22:44: note: in instantiation of function template specialization 'Kokkos::View<const float **, Kokkos::SYCLDeviceUSMSpace>::View<char[2]>' requested here
+   22 |     Kokkos::View<const float **, MemSpace> A("A", n, n);
+      |                                            ^
+/home/crazyproger/kokkos/build/install/include/Kokkos_CopyViews.hpp:824:3: note: candidate function template not viable: no known conversion from 'const float *' to 'void *' for 2nd argument
+  824 |   ZeroMemset(const ExecutionSpace& exec_space, void* dst, size_t cnt) {
+      |   ^                                            ~~~~~~~~~
+/home/crazyproger/kokkos/build/install/include/Kokkos_CopyViews.hpp:824:3: note: implicit deduction guide declared as 'template <typename ExecutionSpace> ZeroMemset(const ExecutionSpace &exec_space, void *dst, size_t cnt) -> ZeroMemset<ExecutionSpace>'
+/home/crazyproger/kokkos/build/install/include/Kokkos_CopyViews.hpp:823:8: note: candidate function template not viable: requires 1 argument, but 3 were provided
+  823 | struct ZeroMemset {
+      |        ^~~~~~~~~~
+/home/crazyproger/kokkos/build/install/include/Kokkos_CopyViews.hpp:823:8: note: implicit deduction guide declared as 'template <typename ExecutionSpace> ZeroMemset(ZeroMemset<ExecutionSpace>) -> ZeroMemset<ExecutionSpace>'
+/home/crazyproger/kokkos/build/install/include/Kokkos_CopyViews.hpp:1098:17: error: static assertion failed due to requirement 'std::is_same_v<const float, float>': deep_copy requires non-const destination type
+ 1098 |   static_assert(std::is_same_v<typename dst_type::value_type,
+      |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 1099 |                                typename dst_type::non_const_value_type>,
+      |                                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/crazyproger/sandbox/oneapi-2026/3822B1FI1/9_jacobi_kokkos/beresnev_anton/jacobi_kokkos.cpp:37:13: note: in instantiation of function template specialization 'Kokkos::deep_copy<const float **, Kokkos::SYCLDeviceUSMSpace, float **, Kokkos::LayoutLeft, Kokkos::Device<Kokkos::OpenMP, Kokkos::HostSpace>, Kokkos::Experimental::EmptyViewHooks>' requested here
+   37 |     Kokkos::deep_copy(A, A_host);
+      |             ^
+In file included from /home/crazyproger/sandbox/oneapi-2026/3822B1FI1/9_jacobi_kokkos/beresnev_anton/jacobi_kokkos.cpp:1:
+In file included from /home/crazyproger/sandbox/oneapi-2026/3822B1FI1/9_jacobi_kokkos/beresnev_anton/jacobi_kokkos.h:5:
+In file included from /home/crazyproger/kokkos/build/install/include/Kokkos_Core.hpp:70:
+/home/crazyproger/kokkos/build/install/include/Kokkos_CopyViews.hpp:1249:7: error: no matching constructor for initialization of 'Kokkos::Impl::DeepCopy<dst_memory_space, src_memory_space>' (aka 'DeepCopy<Kokkos::SYCLDeviceUSMSpace, Kokkos::HostSpace>')
+ 1249 |       Kokkos::Impl::DeepCopy<dst_memory_space, src_memory_space>(
+      |       ^
+ 1250 |           dst.data(), src.data(), nbytes);
+      |           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/crazyproger/kokkos/build/install/include/SYCL/Kokkos_SYCL_DeepCopy.hpp:38:3: note: candidate constructor not viable: no known conversion from 'pointer_type' (aka 'const float *') to 'void *' for 1st argument
+   38 |   DeepCopy(void* dst, const void* src, size_t n) { DeepCopySYCL(dst, src, n); }
+      |   ^        ~~~~~~~~~
+/home/crazyproger/kokkos/build/install/include/SYCL/Kokkos_SYCL_DeepCopy.hpp:39:3: note: candidate constructor not viable: requires 4 arguments, but 3 were provided
+   39 |   DeepCopy(const Kokkos::SYCL& instance, void* dst, const void* src, size_t n) {
+      |   ^        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/crazyproger/kokkos/build/install/include/SYCL/Kokkos_SYCL_DeepCopy.hpp:36:8: note: candidate constructor (the implicit copy constructor) not viable: requires 1 argument, but 3 were provided
+   36 | struct DeepCopy<MemSpace, HostSpace, Kokkos::SYCL,
+      |        ^~~~~~~~
+/home/crazyproger/kokkos/build/install/include/SYCL/Kokkos_SYCL_DeepCopy.hpp:36:8: note: candidate constructor (the implicit move constructor) not viable: requires 1 argument, but 3 were provided
+   36 | struct DeepCopy<MemSpace, HostSpace, Kokkos::SYCL,
+      |        ^~~~~~~~
+In file included from /home/crazyproger/sandbox/oneapi-2026/3822B1FI1/9_jacobi_kokkos/beresnev_anton/jacobi_kokkos.cpp:1:
+In file included from /home/crazyproger/sandbox/oneapi-2026/3822B1FI1/9_jacobi_kokkos/beresnev_anton/jacobi_kokkos.h:5:
+In file included from /home/crazyproger/kokkos/build/install/include/Kokkos_Core.hpp:70:
+/home/crazyproger/kokkos/build/install/include/Kokkos_CopyViews.hpp:1098:17: error: static assertion failed due to requirement 'std::is_same_v<const float, float>': deep_copy requires non-const destination type
+ 1098 |   static_assert(std::is_same_v<typename dst_type::value_type,
+      |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 1099 |                                typename dst_type::non_const_value_type>,
+      |                                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/crazyproger/sandbox/oneapi-2026/3822B1FI1/9_jacobi_kokkos/beresnev_anton/jacobi_kokkos.cpp:38:13: note: in instantiation of function template specialization 'Kokkos::deep_copy<const float *, Kokkos::SYCLDeviceUSMSpace, float *, Kokkos::LayoutLeft, Kokkos::Device<Kokkos::OpenMP, Kokkos::HostSpace>, Kokkos::Experimental::EmptyViewHooks>' requested here
+   38 |     Kokkos::deep_copy(B, B_host);
+      |             ^
+In file included from /home/crazyproger/sandbox/oneapi-2026/3822B1FI1/9_jacobi_kokkos/beresnev_anton/jacobi_kokkos.cpp:1:
+In file included from /home/crazyproger/sandbox/oneapi-2026/3822B1FI1/9_jacobi_kokkos/beresnev_anton/jacobi_kokkos.h:5:
+In file included from /home/crazyproger/kokkos/build/install/include/Kokkos_Core.hpp:70:
+/home/crazyproger/kokkos/build/install/include/Kokkos_CopyViews.hpp:1249:7: error: no matching constructor for initialization of 'Kokkos::Impl::DeepCopy<dst_memory_space, src_memory_space>' (aka 'DeepCopy<Kokkos::SYCLDeviceUSMSpace, Kokkos::HostSpace>')
+ 1249 |       Kokkos::Impl::DeepCopy<dst_memory_space, src_memory_space>(
+      |       ^
+ 1250 |           dst.data(), src.data(), nbytes);
+      |           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/crazyproger/kokkos/build/install/include/SYCL/Kokkos_SYCL_DeepCopy.hpp:38:3: note: candidate constructor not viable: no known conversion from 'pointer_type' (aka 'const float *') to 'void *' for 1st argument
+   38 |   DeepCopy(void* dst, const void* src, size_t n) { DeepCopySYCL(dst, src, n); }
+      |   ^        ~~~~~~~~~
+/home/crazyproger/kokkos/build/install/include/SYCL/Kokkos_SYCL_DeepCopy.hpp:39:3: note: candidate constructor not viable: requires 4 arguments, but 3 were provided
+   39 |   DeepCopy(const Kokkos::SYCL& instance, void* dst, const void* src, size_t n) {
+      |   ^        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/crazyproger/kokkos/build/install/include/SYCL/Kokkos_SYCL_DeepCopy.hpp:36:8: note: candidate constructor (the implicit copy constructor) not viable: requires 1 argument, but 3 were provided
+   36 | struct DeepCopy<MemSpace, HostSpace, Kokkos::SYCL,
+      |        ^~~~~~~~
+/home/crazyproger/kokkos/build/install/include/SYCL/Kokkos_SYCL_DeepCopy.hpp:36:8: note: candidate constructor (the implicit move constructor) not viable: requires 1 argument, but 3 were provided
+   36 | struct DeepCopy<MemSpace, HostSpace, Kokkos::SYCL,
+      |        ^~~~~~~~
+5 errors generated.
