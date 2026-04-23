@@ -1,0 +1,5 @@
+/usr/bin/ld: /tmp/icpx-0f74244fe0/main-1ffef1.o: in function `Run(int)':
+main.cpp:(.text+0x2d0): undefined reference to `JacobiKokkos(std::vector<float, std::allocator<float> > const&, std::vector<float, std::allocator<float> > const&, float)'
+/usr/bin/ld: /tmp/icpx-0f74244fe0/main-1ffef1.o: in function `main':
+main.cpp:(.text+0xb27): undefined reference to `JacobiKokkos(std::vector<float, std::allocator<float> > const&, std::vector<float, std::allocator<float> > const&, float)'
+icpx: error: linker command failed with exit code 1 (use -v to see invocation)
