@@ -2,7 +2,7 @@
 // #include <iostream>
 // #include <iomanip>
 
-std::vector<float> JacobiDevONEAPI(const std::vector<float> a, const std::vector<float> b, float accuracy, sycl::device device) {
+std::vector<float> JacobiDevONEAPI(const std::vector<float>& a, const std::vector<float>& b, float accuracy, sycl::device device) {
   size_t n = b.size();
   std::vector<float> result(n);
 

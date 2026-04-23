@@ -1,6 +1,6 @@
 #include "jacobi_kokkos.h"
 
-std::vector<float> JacobiKokkos(const std::vector<float> a, const std::vector<float> b, float accuracy){
+std::vector<float> JacobiKokkos(const std::vector<float>& a, const std::vector<float>& b, float accuracy){
   size_t n = b.size();
 
   Kokkos::View<float*> d_a("a", n * n);
