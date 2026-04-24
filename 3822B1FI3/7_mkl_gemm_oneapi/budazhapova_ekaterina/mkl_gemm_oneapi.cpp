@@ -1,5 +1,5 @@
 #include "mkl_gemm_oneapi.h"
-#include <oneapi/mkl.hpp>
+#include <oneapi/mkl/blas.hpp>
 #include <vector>
 
 std::vector<float> GemmMklONEAPI(
@@ -7,33 +7,21 @@ std::vector<float> GemmMklONEAPI(
         size_t size, sycl::device device) {
 
     sycl::queue q(device);
-    size_t n = size;
-    size_t total = n * n;
-
-    std::vector<float> a_col(total), b_col(total);
-    for (size_t i = 0; i < n; ++i) {
-        for (size_t j = 0; j < n; ++j) {
-            a_col[j * n + i] = a[i * n + j];
-            b_col[j * n + i] = b[i * n + j];
-        }
-    }
-
-    sycl::buffer<float, 1> buf_a(a_col.data(), sycl::range<1>(total));
-    sycl::buffer<float, 1> buf_b(b_col.data(), sycl::range<1>(total));
+    std::int64_t n = static_cast<std::int64_t>(size);
+    size_t total = size * size;
+    sycl::buffer<float, 1> buf_a(a.data(), sycl::range<1>(total));
+    sycl::buffer<float, 1> buf_b(b.data(), sycl::range<1>(total));
     sycl::buffer<float, 1> buf_c(sycl::range<1>(total));
 
     float alpha = 1.0f, beta = 0.0f;
-    oneapi::mkl::transpose trans = oneapi::mkl::transpose::nontrans;
-    oneapi::mkl::blas::gemm(q, trans, trans, n, n, n, alpha, buf_a, n, buf_b, n, beta, buf_c, n);
+    auto trans = oneapi::mkl::transpose::nontrans;
+    oneapi::mkl::blas::row_major::gemm(
+        q, trans, trans, n, n, n,
+        alpha, buf_a, n,
+        buf_b, n,
+        beta, buf_c, n);
     q.wait();
-
-    std::vector<float> result(total);
     auto host_c = buf_c.get_host_access();
-    for (size_t i = 0; i < n; ++i) {
-        for (size_t j = 0; j < n; ++j) {
-            result[i * n + j] = host_c[j * n + i];
-        }
-    }
-
+    std::vector<float> result(host_c.begin(), host_c.end());
     return result;
 }

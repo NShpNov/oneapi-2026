@@ -9,17 +9,19 @@ float IntegralONEAPI(float start, float end, int count, sycl::device device) {
 
     q.submit([&](sycl::handler& h) {
         auto reduction = sycl::reduction(result_buf, h, sycl::plus<float>());
-        h.parallel_for(sycl::range<2>{count, count},
+        h.parallel_for(sycl::range<2>{static_cast<std::size_t>(count),
+                                      static_cast<std::size_t>(count)},
                        reduction,
                        [=](sycl::id<2> idx, auto& sum) {
-                           size_t i = idx[0];
-                           size_t j = idx[1];
+                           std::size_t i = idx[0];
+                           std::size_t j = idx[1];
                            float x = start + (i + 0.5f) * h;
                            float y = start + (j + 0.5f) * h;
                            float value = sycl::sin(x) * sycl::cos(y);
                            sum += value * h2;
                        });
     });
+
     auto result_host = result_buf.get_host_access();
     return result_host[0];
 }
