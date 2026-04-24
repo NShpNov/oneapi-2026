@@ -6,33 +6,44 @@ std::vector<float> JacobiAccONEAPI(
     float eps, sycl::device dev) {
     
     const size_t dim = vector_b.size();
-    std::vector<float> solution(dim, 0.0f);
+    std::vector<float> solution(dim);
     
     try {
         sycl::queue q(dev);
         
-        // Создаем буферы. Для векторов x и x_next используем инициализацию нулями.
         sycl::buffer<float, 1> buf_a(matrix_a.data(), sycl::range<1>(matrix_a.size()));
         sycl::buffer<float, 1> buf_b(vector_b.data(), sycl::range<1>(dim));
-        sycl::buffer<float, 1> buf_curr(dim);
-        sycl::buffer<float, 1> buf_next(dim);
+        sycl::buffer<float, 1> buf_v1(dim);
+        sycl::buffer<float, 1> buf_v2(dim);
+        
+        float current_error = 0.0f;
+        sycl::buffer<float, 1> buf_err(&current_error, 1);
 
         q.submit([&](sycl::handler& h) {
-            auto out = buf_curr.get_access<sycl::access::mode::write>(h);
+            auto out = buf_v1.get_access<sycl::access::mode::write>(h);
             h.fill(out, 0.0f);
         });
 
-        float current_error = 0.0f;
         int step_count = 0;
+        
+        auto* curr_ptr = &buf_v1;
+        auto* next_ptr = &buf_v2;
 
         do {
             q.submit([&](sycl::handler& h) {
+                auto acc_err = buf_err.get_access<sycl::access::mode::write>(h);
+                h.fill(acc_err, 0.0f);
+            });
+
+            q.submit([&](sycl::handler& h) {
                 auto a = buf_a.get_access<sycl::access::mode::read>(h);
                 auto b = buf_b.get_access<sycl::access::mode::read>(h);
-                auto x = buf_curr.get_access<sycl::access::mode::read>(h);
-                auto x_new = buf_next.get_access<sycl::access::mode::write>(h);
+                auto x = curr_ptr->get_access<sycl::access::mode::read>(h);
+                auto x_new = next_ptr->get_access<sycl::access::mode::write>(h);
+                
+                auto red = sycl::reduction(buf_err, h, sycl::maximum<float>());
 
-                h.parallel_for(sycl::range<1>(dim), [=](sycl::id<1> id) {
+                h.parallel_for(sycl::range<1>(dim), red, [=](sycl::id<1> id, auto& max_val) {
                     int i = id[0];
                     float sigma = 0.0f;
                     
@@ -41,39 +52,28 @@ std::vector<float> JacobiAccONEAPI(
                             sigma += a[i * dim + j] * x[j];
                         }
                     }
-                    x_new[i] = (b[i] - sigma) / a[i * dim + i];
+                    float res = (b[i] - sigma) / a[i * dim + i];
+                    
+                    max_val.combine(sycl::fabs(res - x[i]));
+                    x_new[i] = res;
                 });
             });
 
-            sycl::buffer<float, 1> error_buf(&current_error, 1);
-            q.submit([&](sycl::handler& h) {
-                auto x_old = buf_curr.get_access<sycl::access::mode::read>(h);
-                auto x_new = buf_next.get_access<sycl::access::mode::read>(h);
-                auto red = sycl::reduction(error_buf, h, sycl::maximum<float>());
-
-                h.parallel_for(sycl::range<1>(dim), red, [=](sycl::id<1> id, auto& max_val) {
-                    float diff = sycl::fabs(x_new[id] - x_old[id]);
-                    max_val.combine(diff);
-                });
-            }).wait();
-
-            q.submit([&](sycl::handler& h) {
-                auto src = buf_next.get_access<sycl::access::mode::read>(h);
-                auto dst = buf_curr.get_access<sycl::access::mode::write>(h);
-                h.copy(src, dst);
-            });
-
+            std::swap(curr_ptr, next_ptr);
             step_count++;
-            
-            current_error = error_buf.get_host_access()[0];
+
+            {
+                auto host_err = buf_err.get_host_access();
+                current_error = host_err[0];
+            }
 
         } while (step_count < ITERATIONS && current_error >= eps);
 
-        auto final_access = buf_curr.get_host_access();
+        auto final_access = curr_ptr->get_host_access();
         std::copy(final_access.get_pointer(), final_access.get_pointer() + dim, solution.begin());
 
     } catch (sycl::exception const& ex) {
-        return {}; // Возвращаем пустой вектор в случае ошибки
+        return {};
     }
 
     return solution;
