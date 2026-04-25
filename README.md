@@ -538,6 +538,7 @@ std::vector<float> JacobiKokkos(
 |3822B1FI1|rezantseva_anastasia|0.5868|5|
 |3822B1FI3|kudryashova_irina|0.8364|8|
 |3822B1FI3|shmidt_olga|0.8368|10|
+|3822B1FI3|solovyev_danila|0.8375|12|
 |3822B1FI2|yasakova_tanya|0.8381|2|
 |3822B1FI3|frolova_elizaveta|0.8388|3|
 |3822B1FI2|plekhanov_daniil|0.8393|5|
@@ -571,7 +572,6 @@ std::vector<float> JacobiKokkos(
 |3822B1FI1|kurakin_matvey|1.0185|12|
 |3822B1FI1|shulpin_ilya|1.0230|8|
 |3822B1FI3|budazhapova_ekaterina|BUILD FAILED|-|
-|3822B1FI3|solovyev_danila|TEST FAILED|-|
 
 ## 3_acc_jacobi_oneapi (4096 elements)
 |Group|Name|Result|Rank|
@@ -952,22 +952,22 @@ Passed: 6
 |Group|Name|Passed|Score|
 |-----|----|------|-----|
 |3822B1FI3|budazhapova_ekaterina|6/9|291|
-|3822B1FI3|chizhov_maxim|**9/9**|**459**|
-|3822B1FI3|ekaterina_kozlova|**9/9**|**484**|
-|3822B1FI3|frolova_elizaveta|**9/9**|**501**|
-|3822B1FI3|kholin_kirill|**9/9**|**479**|
-|3822B1FI3|kolodkin_grigorii|**9/9**|**501**|
-|3822B1FI3|koshkin_nikita|**9/9**|**448**|
+|3822B1FI3|chizhov_maxim|**9/9**|**458**|
+|3822B1FI3|ekaterina_kozlova|**9/9**|**483**|
+|3822B1FI3|frolova_elizaveta|**9/9**|**500**|
+|3822B1FI3|kholin_kirill|**9/9**|**478**|
+|3822B1FI3|kolodkin_grigorii|**9/9**|**500**|
+|3822B1FI3|koshkin_nikita|**9/9**|**447**|
 |3822B1FI3|kudryashova_irina|**9/9**|**479**|
-|3822B1FI3|lopatin_ilya|**9/9**|**506**|
-|3822B1FI3|lysov_ivan|**9/9**|**480**|
+|3822B1FI3|lopatin_ilya|**9/9**|**505**|
+|3822B1FI3|lysov_ivan|**9/9**|**479**|
 |3822B1FI3|shmidt_olga|6/9|313|
-|3822B1FI3|solovyev_danila|8/9|385|
+|3822B1FI3|solovyev_danila|**9/9**|**435**|
 |3822B1FI3|sozonov_ilya|8/9|432|
 
-Passed: 9
+Passed: 10
 
-**Total Passed: 29**
+**Total Passed: 30**
 
 ---
 *Maximum Score: 576 (64 per task)*
