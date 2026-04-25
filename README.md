@@ -867,6 +867,7 @@ std::vector<float> JacobiKokkos(
 ## 9_jacobi_kokkos (4096 elements)
 |Group|Name|Result|Rank|
 |-----|----|------|----|
+|3822B1FI1|komshina_daria|0.2102|18|
 |3822B1FI1|suvorov_dmitrii|0.2127|11|
 |3822B1FI2|guseynov_emil|0.2335|4|
 |3822B1FI1|ivanov_mikhail|0.2400|12|
@@ -915,25 +916,25 @@ std::vector<float> JacobiKokkos(
 ## 3822B1FI1
 |Group|Name|Passed|Score|
 |-----|----|------|-----|
-|3822B1FI1|baranov_aleksey|7/9|277|
+|3822B1FI1|baranov_aleksey|7/9|276|
 |3822B1FI1|beresnev_anton|8/9|325|
-|3822B1FI1|beskhmelnova_kseniya|**9/9**|**472**|
-|3822B1FI1|chistov_alexey|**9/9**|**483**|
-|3822B1FI1|drozhdinov_dmitriy|**9/9**|**421**|
-|3822B1FI1|grudzin_konstantin|**9/9**|**407**|
-|3822B1FI1|ionova_ekaterina|**9/9**|**423**|
-|3822B1FI1|ivanov_mikhail|**9/9**|**409**|
-|3822B1FI1|kabalova_valeria|8/9|337|
-|3822B1FI1|komshina_daria|7/9|292|
-|3822B1FI1|korobeinikov_arseny|**9/9**|**326**|
-|3822B1FI1|kurakin_matvey|**9/9**|**401**|
-|3822B1FI1|kuznetsov_mikhail|**9/9**|**401**|
-|3822B1FI1|mironov_arseniy|**9/9**|**424**|
-|3822B1FI1|rezantseva_anastasia|**9/9**|**475**|
-|3822B1FI1|shulpin_ilya|**9/9**|**438**|
-|3822B1FI1|shurigin_sergey|**9/9**|**431**|
-|3822B1FI1|solovev_alexey|**9/9**|**450**|
-|3822B1FI1|suvorov_dmitrii|8/9|387|
+|3822B1FI1|beskhmelnova_kseniya|**9/9**|**471**|
+|3822B1FI1|chistov_alexey|**9/9**|**482**|
+|3822B1FI1|drozhdinov_dmitriy|**9/9**|**420**|
+|3822B1FI1|grudzin_konstantin|**9/9**|**406**|
+|3822B1FI1|ionova_ekaterina|**9/9**|**422**|
+|3822B1FI1|ivanov_mikhail|**9/9**|**408**|
+|3822B1FI1|kabalova_valeria|8/9|336|
+|3822B1FI1|komshina_daria|8/9|339|
+|3822B1FI1|korobeinikov_arseny|**9/9**|**325**|
+|3822B1FI1|kurakin_matvey|**9/9**|**400**|
+|3822B1FI1|kuznetsov_mikhail|**9/9**|**400**|
+|3822B1FI1|mironov_arseniy|**9/9**|**423**|
+|3822B1FI1|rezantseva_anastasia|**9/9**|**474**|
+|3822B1FI1|shulpin_ilya|**9/9**|**437**|
+|3822B1FI1|shurigin_sergey|**9/9**|**430**|
+|3822B1FI1|solovev_alexey|**9/9**|**449**|
+|3822B1FI1|suvorov_dmitrii|8/9|386|
 |3822B1FI1|vasenkov_andrey|3/9|96|
 |3822B1FI1|vershinina_olga|4/9|179|
 
