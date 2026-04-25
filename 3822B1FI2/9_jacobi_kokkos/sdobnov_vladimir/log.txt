@@ -1,0 +1,16 @@
+Kokkos::OpenMP::initialize WARNING: OMP_PROC_BIND environment variable not set
+  In general, for best performance with OpenMP 4.0 or better set OMP_PROC_BIND=spread and OMP_PLACES=threads
+  For best performance with OpenMP 3.1 set OMP_PROC_BIND=true
+  For unit testing set OMP_PROC_BIND=false
+
+Kokkos::View ERROR: attempt to access inaccessible memory space (label="a")
+Backtrace:
+[0x43b840] 
+[0x409042] 
+[0x414006] 
+[0x4145bd] 
+[0x40b572] 
+[0x415a7b] 
+[0x7f46ba005d90] 
+[0x7f46ba005e40] __libc_start_main
+[0x40b285] 

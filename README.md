@@ -812,8 +812,8 @@ std::vector<float> JacobiKokkos(
 |3822B1FI2|sdobnov_vladimir|0.0002|10|
 |3822B1FI3|lysov_ivan|0.0002|7|
 |3822B1FI1|kuznetsov_mikhail|0.0003|14|
-|3822B1FI3|lopatin_ilya|0.0005|3|
 |3822B1FI2|plekhanov_daniil|0.0005|5|
+|3822B1FI3|lopatin_ilya|0.0005|3|
 |3822B1FI3|sozonov_ilya|0.0006|9|
 |3822B1FI3|ekaterina_kozlova|0.0006|5|
 |3822B1FI1|suvorov_dmitrii|0.0006|11|
@@ -827,26 +827,26 @@ std::vector<float> JacobiKokkos(
 |3822B1FI3|kholin_kirill|2.3205|4|
 |3822B1FI3|kudryashova_irina|2.3206|8|
 |3822B1FI3|kolodkin_grigorii|2.3206|1|
+|3822B1FI2|khokhlov_andrey|2.3227|4|
 |3822B1FI3|chizhov_maxim|2.3227|6|
 |3822B1FI1|grudzin_konstantin|2.3227|15|
-|3822B1FI2|khokhlov_andrey|2.3227|4|
+|3822B1FI2|dormidontov_egor|2.3228|9|
 |3822B1FI3|solovyev_danila|2.3228|12|
 |3822B1FI1|vershinina_olga|2.3228|13|
 |3822B1FI1|ionova_ekaterina|2.3228|6|
-|3822B1FI2|dormidontov_egor|2.3228|9|
-|3822B1FI1|drozhdinov_dmitriy|2.3230|7|
 |3822B1FI2|bessonov_egor|2.3230|2|
+|3822B1FI1|drozhdinov_dmitriy|2.3230|7|
 |3822B1FI1|beresnev_anton|2.3320|17|
 |3822B1FI3|budazhapova_ekaterina|2.9761|11|
 |3822B1FI1|shulpin_ilya|2.9876|4|
 |3822B1FI1|kabalova_valeria|2.9969|16|
-|3822B1FI3|koshkin_nikita|2.9971|10|
 |3822B1FI2|vyunova_ekaterina|2.9971|6|
-|3822B1FI1|mironov_arseniy|2.9993|10|
-|3822B1FI1|baranov_aleksey|2.9993|18|
+|3822B1FI3|koshkin_nikita|2.9971|10|
 |3822B1FI2|guseynov_emil|2.9993|3|
 |3822B1FI2|vyunov_danila|2.9993|7|
 |3822B1FI2|shkurinskaya_elena|2.9993|8|
+|3822B1FI1|mironov_arseniy|2.9993|10|
+|3822B1FI1|baranov_aleksey|2.9993|18|
 |3822B1FI1|kurakin_matvey|2.9994|9|
 |3822B1FI1|shurigin_sergey|2.9995|8|
 |3822B1FI1|ivanov_mikhail|2.9996|12|
@@ -896,6 +896,7 @@ std::vector<float> JacobiKokkos(
 |3822B1FI1|vershinina_olga|RUN FAILED|-|
 |3822B1FI1|beresnev_anton|RUN FAILED|-|
 |3822B1FI2|vyunov_danila|BUILD FAILED|-|
+|3822B1FI2|sdobnov_vladimir|RUN FAILED|-|
 |3822B1FI3|shmidt_olga|RUN FAILED|-|
 |3822B1FI3|sozonov_ilya|RUN FAILED|-|
 
