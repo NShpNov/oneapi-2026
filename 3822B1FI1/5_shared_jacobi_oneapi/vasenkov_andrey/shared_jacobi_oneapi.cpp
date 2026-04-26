@@ -1,8 +1,8 @@
 #include "shared_jacobi_oneapi.h"
 
-#include <cmath>
 #include <algorithm>
 #include <vector>
+#include <cmath>
 
 std::vector<float> JacobiSharedONEAPI(
         const std::vector<float>& matrix,
@@ -56,7 +56,7 @@ std::vector<float> JacobiSharedONEAPI(
 
             queue.submit([&](sycl::handler& handler)
             {
-                auto reduction = sycl::reduction(d_max_diff, handler, sycl::maximum<float>());
+                auto reduction = sycl::reduction(d_max_diff, sycl::maximum<float>());
 
                 handler.parallel_for(
                     sycl::range<1>{size},
