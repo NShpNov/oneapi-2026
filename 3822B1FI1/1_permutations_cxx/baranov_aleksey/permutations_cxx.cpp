@@ -1,77 +1,38 @@
-#include <array>
-#include <cstdint>
-#include <string>
-#include <vector>
-#include <unordered_map>
+#include "permutations_cxx.h"
+
 #include <algorithm>
+#include <array>
+#include <unordered_map>
 
-using dictionary_t = std::unordered_map<std::string, std::vector<std::string>>;
+void Permutations(dictionary_t &dictionary) {
+  std::unordered_map<std::string, std::vector<dictionary_t::iterator>> anagramGroups;
+  anagramGroups.reserve(dictionary.size());
 
-namespace {
+  for (auto entryIt = dictionary.begin(); entryIt != dictionary.end(); ++entryIt) {
+    std::string sortedKey = entryIt->first;
+    std::sort(sortedKey.begin(), sortedKey.end());
+    anagramGroups[sortedKey].push_back(entryIt);
+  }
 
-struct CharCounts {
-    std::array<std::uint16_t, 26> counts;
+  for (auto &[sortedKey, entryGroup] : anagramGroups) {
+    if (entryGroup.size() <= 1)
+      continue;
 
-    CharCounts() : counts() {}
-
-    explicit CharCounts(const std::string& word) : counts() {
-        for (char letter : word) {
-            ++counts[static_cast<std::size_t>(letter - 'a')];
-        }
+    std::vector<std::string_view> sortedWords;
+    sortedWords.reserve(entryGroup.size());
+    for (auto groupIt : entryGroup) {
+      sortedWords.push_back(groupIt->first);
     }
+    std::sort(sortedWords.begin(), sortedWords.end(), std::greater<std::string_view>());
 
-    bool operator==(const CharCounts& other) const {
-        return counts == other.counts;
+    for (auto &groupIt : entryGroup) {
+      std::vector<std::string> otherWords;
+      otherWords.reserve(sortedWords.size() - 1);
+      for (const auto &word : sortedWords) {
+        if (word != groupIt->first)
+          otherWords.push_back(std::string(word));
+      }
+      groupIt->second = std::move(otherWords);
     }
-};
-
-struct CharCountsHasher {
-    std::size_t operator()(const CharCounts& obj) const {
-        std::size_t hashValue = 0;
-        for (std::size_t i = 0; i < obj.counts.size(); ++i) {
-            hashValue = hashValue * 131u + obj.counts[i];
-        }
-        return hashValue;
-    }
-};
-
-}  // namespace
-
-void Permutations(dictionary_t& dictionary) {
-    using EntryIt = dictionary_t::iterator;
-    using AnagramGroups = std::unordered_map<CharCounts, std::vector<EntryIt>, CharCountsHasher>;
-
-    AnagramGroups anagramGroups;
-    anagramGroups.reserve(dictionary.size());
-
-    for (EntryIt entryIt = dictionary.begin(); entryIt != dictionary.end(); ++entryIt) {
-        anagramGroups[CharCounts(entryIt->first)].push_back(entryIt);
-    }
-
-    for (auto& groupPair : anagramGroups) {
-        std::vector<EntryIt>& groupEntries = groupPair.second;
-        const std::size_t groupSize = groupEntries.size();
-
-        if (groupSize <= 1) {
-            continue;
-        }
-
-        // Сортировка по убыванию исходного слова (ключа)
-        std::stable_sort(groupEntries.begin(), groupEntries.end(),
-                         [](const EntryIt& a, const EntryIt& b) {
-                             return a->first > b->first;
-                         });
-
-        for (std::size_t idx = 0; idx < groupSize; ++idx) {
-            std::vector<std::string>& permutationsList = groupEntries[idx]->second;
-            permutationsList.clear();
-            permutationsList.reserve(groupSize - 1);
-
-            for (std::size_t otherIdx = 0; otherIdx < groupSize; ++otherIdx) {
-                if (idx != otherIdx) {
-                    permutationsList.push_back(groupEntries[otherIdx]->first);
-                }
-            }
-        }
-    }
+  }
 }

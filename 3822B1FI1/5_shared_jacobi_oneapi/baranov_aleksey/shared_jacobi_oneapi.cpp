@@ -1,99 +1,78 @@
 #include "shared_jacobi_oneapi.h"
-#include <algorithm>
+#include <cmath>
 
 std::vector<float> JacobiSharedONEAPI(
-        const std::vector<float>& a, const std::vector<float>& b,
-        float accuracy, sycl::device device) {
-    
-    const int n = static_cast<int>(b.size());
-    sycl::queue computeQueue(device);
+        const std::vector<float>& a,
+        const std::vector<float>& b,
+        float accuracy,
+        sycl::device device) {
 
-    // Выделение общей (shared) памяти USM
-    float* sharedMatrix = sycl::malloc_shared<float>(a.size(), computeQueue);
-    float* sharedRhs    = sycl::malloc_shared<float>(n, computeQueue);
-    float* sharedX      = sycl::malloc_shared<float>(n, computeQueue);
-    float* sharedXnext  = sycl::malloc_shared<float>(n, computeQueue);
-    float* sharedMaxDiff = sycl::malloc_shared<float>(1, computeQueue);
+    const size_t dim = b.size();
 
-    std::copy(a.begin(), a.end(), sharedMatrix);
-    std::copy(b.begin(), b.end(), sharedRhs);
-    std::fill(sharedX, sharedX + n, 0.0f);
+    sycl::queue computeQueue(device, sycl::property::queue::in_order{});
 
-    // Оптимизация: подбор размера рабочей группы для эффективного использования SLM
-    const size_t workGroupSize = 256;
-    const size_t numGroups = (n + workGroupSize - 1) / workGroupSize;
-    const size_t globalSize = numGroups * workGroupSize;
+    std::vector<float> result(dim, 0.0f);
+
+    float* devMatrixA = sycl::malloc_shared<float>(a.size(), computeQueue);
+    float* devRhs     = sycl::malloc_shared<float>(b.size(), computeQueue);
+    float* devXcurr   = sycl::malloc_shared<float>(dim, computeQueue);
+    float* devXnext   = sycl::malloc_shared<float>(dim, computeQueue);
+    float* devMaxDiff = sycl::malloc_shared<float>(1, computeQueue);
+
+    computeQueue.memcpy(devMatrixA, a.data(), a.size() * sizeof(float));
+    computeQueue.memcpy(devRhs,     b.data(), b.size() * sizeof(float));
+    computeQueue.memset(devXcurr,   0, sizeof(float) * dim);
+    computeQueue.memset(devXnext,   0, sizeof(float) * dim);
+    computeQueue.wait();
 
     for (int iteration = 0; iteration < ITERATIONS; ++iteration) {
-        *sharedMaxDiff = 0.0f;
 
-        computeQueue.submit([&](sycl::handler& cgh) {
-            // Локальная память для кэширования части вектора X (размер равен workGroupSize)
-            sycl::local_accessor<float, 1> localX(workGroupSize, cgh);
+        *devMaxDiff = 0.0f;
 
-            auto maxReducer = sycl::reduction(sharedMaxDiff, sycl::maximum<float>());
+        auto maxReducer = sycl::reduction(
+            devMaxDiff,
+            sycl::maximum<float>());
 
-            cgh.parallel_for(
-                sycl::nd_range<1>(globalSize, workGroupSize),
-                maxReducer,
-                [=](sycl::nd_item<1> item, auto& diff) {
-                    const int i = item.get_global_id(0);
-                    const int localId = item.get_local_id(0);
-                    const int groupSize = item.get_local_range(0);
+        computeQueue.parallel_for(
+            sycl::range<1>(dim),
+            maxReducer,
+            [=](sycl::id<1> idx, auto& diff) {
 
-                    // Инициализация разности нулём, если поток за границами
-                    float localDiff = 0.0f;
+                size_t i = idx[0];
+                float rowSum = devRhs[i];
+                const size_t rowOffset = i * dim;
 
-                    if (i < n) {
-                        float rowSum = 0.0f;
-
-                        // Цикл по блокам столбцов с использованием локальной памяти
-                        for (int colBlock = 0; colBlock < n; colBlock += groupSize) {
-                            // Кооперативная загрузка блока вектора X в SLM
-                            const int col = colBlock + localId;
-                            localX[localId] = (col < n) ? sharedX[col] : 0.0f;
-                            item.barrier(sycl::access::fence_space::local_space);
-
-                            // Вычисление частичного скалярного произведения для текущего блока
-                            const int endCol = sycl::min(colBlock + groupSize, n);
-                            #pragma unroll(4)
-                            for (int j = colBlock; j < endCol; ++j) {
-                                if (i != j) {
-                                    rowSum += sharedMatrix[i * n + j] * localX[j - colBlock];
-                                }
-                            }
-                            item.barrier(sycl::access::fence_space::local_space);
-                        }
-
-                        // Вычисление нового значения x_i
-                        const float newX = (sharedRhs[i] - rowSum) / sharedMatrix[i * n + i];
-                        sharedXnext[i] = newX;
-
-                        // Локальная разность для редукции
-                        localDiff = sycl::fabs(newX - sharedX[i]);
+                #pragma unroll 4
+                for (size_t j = 0; j < dim; ++j) {
+                    if (j != i) {
+                        rowSum -= devMatrixA[rowOffset + j] * devXcurr[j];
                     }
+                }
 
-                    // Редукция (SYCL сам выполнит комбинацию через max)
-                    diff.combine(localDiff);
-                });
-        }).wait();
+                float newX = rowSum / devMatrixA[rowOffset + i];
+                devXnext[i] = newX;
 
-        // Проверка сходимости каждую итерацию (без изменений)
-        if (*sharedMaxDiff < accuracy) {
-            std::swap(sharedX, sharedXnext);
+                float delta = sycl::fabs(newX - devXcurr[i]);
+                diff.combine(delta);
+            });
+
+        computeQueue.wait();
+
+        if (*devMaxDiff < accuracy) {
+            std::swap(devXcurr, devXnext);
             break;
         }
 
-        std::swap(sharedX, sharedXnext);
+        std::swap(devXcurr, devXnext);
     }
 
-    std::vector<float> result(sharedX, sharedX + n);
+    computeQueue.memcpy(result.data(), devXcurr, dim * sizeof(float)).wait();
 
-    sycl::free(sharedMatrix, computeQueue);
-    sycl::free(sharedRhs, computeQueue);
-    sycl::free(sharedX, computeQueue);
-    sycl::free(sharedXnext, computeQueue);
-    sycl::free(sharedMaxDiff, computeQueue);
+    sycl::free(devMatrixA, computeQueue);
+    sycl::free(devRhs,     computeQueue);
+    sycl::free(devXcurr,   computeQueue);
+    sycl::free(devXnext,   computeQueue);
+    sycl::free(devMaxDiff, computeQueue);
 
     return result;
 }
