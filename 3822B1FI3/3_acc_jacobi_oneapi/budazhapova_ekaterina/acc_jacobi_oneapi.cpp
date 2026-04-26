@@ -6,7 +6,7 @@ std::vector<float> JacobiAccONEAPI(
         const std::vector<float>& a, const std::vector<float>& b,
         float accuracy, sycl::device device) {
 
-    std::size_t N = static_cast<std::size_t>(b.size());
+    std::size_t N = b.size();
     if (N == 0 || a.size() != N * N) {
         return {};
     }
@@ -21,10 +21,12 @@ std::vector<float> JacobiAccONEAPI(
     sycl::buffer<float> buf_x_new(x_new.data(), sycl::range<1>(N));
 
     bool use_first_as_old = true;
+    sycl::buffer<float>* solution_buf = nullptr;
 
     for (int iter = 0; iter < ITERATIONS; ++iter) {
         float max_diff_host = 0.0f;
         sycl::buffer<float> diff_buf(&max_diff_host, sycl::range<1>(1));
+
         sycl::buffer<float>& old_buf = use_first_as_old ? buf_x_old : buf_x_new;
         sycl::buffer<float>& new_buf = use_first_as_old ? buf_x_new : buf_x_old;
 
@@ -47,25 +49,28 @@ std::vector<float> JacobiAccONEAPI(
                     }
                     float x_next = (B[row] - sum) / A[row * N + row];
                     new_x[row] = x_next;
+
                     float diff = sycl::fabs(x_next - old_x[row]);
                     max_val.combine(diff);
                 });
         }).wait();
+
+        solution_buf = &new_buf;
+
         {
             auto acc = diff_buf.get_host_access();
             max_diff_host = acc[0];
         }
 
-        use_first_as_old = !use_first_as_old;
-
         if (max_diff_host < accuracy)
             break;
+
+        use_first_as_old = !use_first_as_old;
     }
 
     std::vector<float> result(N);
-    {
-        sycl::buffer<float>& res_buf = use_first_as_old ? buf_x_new : buf_x_old;
-        auto acc = res_buf.get_host_access();
+    if (solution_buf) {
+        auto acc = solution_buf->get_host_access();
         std::copy(acc.begin(), acc.end(), result.begin());
     }
     return result;
