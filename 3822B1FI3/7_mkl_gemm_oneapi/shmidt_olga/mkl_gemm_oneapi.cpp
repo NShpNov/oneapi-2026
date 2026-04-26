@@ -5,7 +5,7 @@ std::vector<float> GemmMklONEAPI(
     const std::vector<float>& a, const std::vector<float>& b,
     size_t size, sycl::device device)
 {
-    std::vector<float> c(size * size, 0.0f);
+    std::vector<float> c(size * size);
 
     sycl::queue queue(device);
 
@@ -15,25 +15,20 @@ std::vector<float> GemmMklONEAPI(
 
     queue.memcpy(d_a, a.data(), size * size * sizeof(float));
     queue.memcpy(d_b, b.data(), size * size * sizeof(float));
-    queue.memcpy(d_c, c.data(), size * size * sizeof(float));
     queue.wait();
-
-    float alpha = 1.0f;
-    float beta = 0.0f;
 
     oneapi::mkl::blas::column_major::gemm(
         queue,
         oneapi::mkl::transpose::trans,
         oneapi::mkl::transpose::trans,
         size, size, size,
-        alpha,
-        d_a, size,
+        1.0f,
         d_b, size,
-        beta,
+        d_a, size,
+        0.0f,
         d_c, size);
 
     queue.wait();
-
     queue.memcpy(c.data(), d_c, size * size * sizeof(float));
     queue.wait();
 
