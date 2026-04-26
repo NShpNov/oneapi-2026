@@ -1,13 +1,13 @@
-/home/crazyproger/sandbox/oneapi-2026/3822B1FI3/7_mkl_gemm_oneapi/budazhapova_ekaterina/mkl_gemm_oneapi.cpp:14:33: warning: parentheses were disambiguated as a function declaration [-Wvexing-parse]
-   14 |     sycl::buffer<float, 1> buf_c(sycl::range<1>(total));
+/home/crazyproger/sandbox/oneapi-2026/3822B1FI3/7_mkl_gemm_oneapi/budazhapova_ekaterina/mkl_gemm_oneapi.cpp:23:33: warning: parentheses were disambiguated as a function declaration [-Wvexing-parse]
+   23 |     sycl::buffer<float, 1> buf_c(sycl::range<1>(total));
       |                                 ^~~~~~~~~~~~~~~~~~~~~~~
-/home/crazyproger/sandbox/oneapi-2026/3822B1FI3/7_mkl_gemm_oneapi/budazhapova_ekaterina/mkl_gemm_oneapi.cpp:14:34: note: add a pair of parentheses to declare a variable
-   14 |     sycl::buffer<float, 1> buf_c(sycl::range<1>(total));
+/home/crazyproger/sandbox/oneapi-2026/3822B1FI3/7_mkl_gemm_oneapi/budazhapova_ekaterina/mkl_gemm_oneapi.cpp:23:34: note: add a pair of parentheses to declare a variable
+   23 |     sycl::buffer<float, 1> buf_c(sycl::range<1>(total));
       |                                  ^                    
       |                                  (                    )
-/home/crazyproger/sandbox/oneapi-2026/3822B1FI3/7_mkl_gemm_oneapi/budazhapova_ekaterina/mkl_gemm_oneapi.cpp:18:5: error: no matching function for call to 'gemm'
-   18 |     oneapi::mkl::blas::row_major::gemm(
-      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/crazyproger/sandbox/oneapi-2026/3822B1FI3/7_mkl_gemm_oneapi/budazhapova_ekaterina/mkl_gemm_oneapi.cpp:27:5: error: no matching function for call to 'gemm'
+   27 |     oneapi::mkl::blas::column_major::gemm(
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 /opt/intel/oneapi/mkl/2025.1/include/oneapi/mkl/blas/buffer_decls.hpp:25:1: note: candidate function not viable: no known conversion from 'sycl::buffer<float, 1> (sycl::range<1>)' to 'sycl::buffer<float, 1> &' for 13th argument
    25 | ONEMKL_DECLARE_BUF_GEMM(float, float, float, float)
       | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -350,7 +350,7 @@
       |                                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    27 |                                 compute_mode mode, const std::vector<sycl::event> &dependencies = {}); \
       |                                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/home/crazyproger/sandbox/oneapi-2026/3822B1FI3/7_mkl_gemm_oneapi/budazhapova_ekaterina/mkl_gemm_oneapi.cpp:24:24: error: member reference base type 'sycl::buffer<float, 1> (sycl::range<1>)' is not a structure or union
-   24 |     auto host_c = buf_c.get_host_access();
+/home/crazyproger/sandbox/oneapi-2026/3822B1FI3/7_mkl_gemm_oneapi/budazhapova_ekaterina/mkl_gemm_oneapi.cpp:34:24: error: member reference base type 'sycl::buffer<float, 1> (sycl::range<1>)' is not a structure or union
+   34 |     auto host_c = buf_c.get_host_access();
       |                   ~~~~~^~~~~~~~~~~~~~~~
 1 warning and 2 errors generated.
