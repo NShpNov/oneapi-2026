@@ -3,8 +3,8 @@
 #include <iostream>
 #include <iomanip>
 
-const int BLOCKSIZE = 32;
-const int LOCALSIZE = 32;
+const int BLOCKSIZE = 16;
+const int LOCALSIZE = 16;
 
 std::vector<float> GemmBlockONEAPI(const std::vector<float>& a, const std::vector<float>& b, size_t size, sycl::device device){
   int block_count = size / BLOCKSIZE;
