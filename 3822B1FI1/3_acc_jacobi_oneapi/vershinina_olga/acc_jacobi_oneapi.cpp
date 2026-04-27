@@ -10,7 +10,7 @@ std::vector<float> JacobiAccONEAPI(
 
     sycl::queue queue{ device, sycl::property::queue::in_order {} };
     const size_t n = b.size();
-    const float e = accuracy * accuracy
+    const float e = accuracy * accuracy;
     std::vector<float> x_curr(n, 0.0f);
 
     sycl::buffer<float, 1> a_buf{ a.data(), sycl::range<1>(a.size()) };
@@ -39,7 +39,7 @@ std::vector<float> JacobiAccONEAPI(
                     }
                 }
                 x_n_acc[i] = (b_acc[i] - sum) / a_acc[i * n + i];
-                error += (x_n_acc[i] - x_c_acc[i]) * (x_n_acc[i] - x_c_acc[i])
+                error += (x_n_acc[i] - x_c_acc[i]) * (x_n_acc[i] - x_c_acc[i]);
                 });
             });
        
