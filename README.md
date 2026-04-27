@@ -816,7 +816,7 @@ std::vector<float> JacobiKokkos(
 |3822B1FI3|kholin_kirill|0.4514|6|
 |3822B1FI1|ionova_ekaterina|0.4525|8|
 |3822B1FI3|lysov_ivan|0.4583|5|
-|3822B1FI3|budazhapova_ekaterina|BUILD FAILED|-|
+|3822B1FI3|budazhapova_ekaterina|TEST FAILED|-|
 
 ## 8_integral_kokkos (65536 elements)
 |Group|Name|Result|Rank|
