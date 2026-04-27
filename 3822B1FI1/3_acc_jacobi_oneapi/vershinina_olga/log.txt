@@ -1,1 +1,9 @@
-Incorrect results, test input_128.bin, difference 1.0
+/home/crazyproger/sandbox/oneapi-2026/3822B1FI1/3_acc_jacobi_oneapi/vershinina_olga/acc_jacobi_oneapi.cpp:13:40: error: expected ';' at end of declaration
+   13 |     const float e = accuracy * accuracy
+      |                                        ^
+      |                                        ;
+/home/crazyproger/sandbox/oneapi-2026/3822B1FI1/3_acc_jacobi_oneapi/vershinina_olga/acc_jacobi_oneapi.cpp:42:79: error: expected ';' after expression
+   42 |                 error += (x_n_acc[i] - x_c_acc[i]) * (x_n_acc[i] - x_c_acc[i])
+      |                                                                               ^
+      |                                                                               ;
+2 errors generated.
