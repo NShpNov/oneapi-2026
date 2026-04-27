@@ -1,42 +1,49 @@
 #include "mkl_gemm_oneapi.h"
-#include <oneapi/mkl.hpp>
+
+#include <cstdint>
+#include <oneapi/mkl/blas.hpp>
 #include <vector>
 
 std::vector<float> GemmMklONEAPI(
-        const std::vector<float>& a, const std::vector<float>& b,
-        size_t size, sycl::device device) {
+        const std::vector<float>& a,
+        const std::vector<float>& b,
+        size_t size,
+        sycl::device device) {
+    const size_t matrix_size = size * size;
+    if (size == 0 || a.size() != matrix_size || b.size() != matrix_size) {
+        return {};
+    }
 
     sycl::queue q(device);
-    std::int64_t n = static_cast<std::int64_t>(size);
-    size_t total = size * size;
+    std::vector<float> c(matrix_size, 0.0f);
 
-    std::vector<float> a_col(total), b_col(total);
-    for (size_t i = 0; i < size; ++i) {
-        for (size_t j = 0; j < size; ++j) {
-            a_col[j * size + i] = a[i * size + j];
-            b_col[j * size + i] = b[i * size + j];
-        }
+    const std::int64_t n = static_cast<std::int64_t>(size);
+
+    constexpr float alpha = 1.0f;
+    constexpr float beta = 0.0f;
+
+    {
+        sycl::buffer<float, 1> a_buf(a.data(), sycl::range<1>(matrix_size));
+        sycl::buffer<float, 1> b_buf(b.data(), sycl::range<1>(matrix_size));
+        sycl::buffer<float, 1> c_buf(c.data(), sycl::range<1>(matrix_size));
+        oneapi::mkl::blas::column_major::gemm(
+            q,
+            oneapi::mkl::transpose::nontrans,
+            oneapi::mkl::transpose::nontrans,
+            n,
+            n,
+            n,
+            alpha,
+            a_buf,
+            n,
+            b_buf,
+            n,
+            beta,
+            c_buf,
+            n
+        );
     }
 
-    sycl::buffer<float, 1> buf_a(a_col.data(), sycl::range<1>(total));
-    sycl::buffer<float, 1> buf_b(b_col.data(), sycl::range<1>(total));
-    sycl::buffer<float, 1> buf_c(sycl::range<1>(total));
-
-    float alpha = 1.0f, beta = 0.0f;
-    auto trans = oneapi::mkl::transpose::nontrans;
-    oneapi::mkl::blas::column_major::gemm(
-        q, trans, trans, n, n, n,
-        alpha, buf_b, n,
-        buf_a, n,
-        beta, buf_c, n);
-    q.wait();
-    std::vector<float> result(total);
-    auto host_c = buf_c.get_host_access();
-    for (size_t i = 0; i < size; ++i) {
-        for (size_t j = 0; j < size; ++j) {
-            result[i * size + j] = host_c[j * size + i];
-        }
-    }
-
-    return result;
+    q.wait_and_throw();
+    return c;
 }
