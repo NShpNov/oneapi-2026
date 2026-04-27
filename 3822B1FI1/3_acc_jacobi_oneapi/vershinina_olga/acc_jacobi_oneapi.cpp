@@ -9,14 +9,14 @@ std::vector<float> JacobiAccONEAPI(
     sycl::device device) {
 
     sycl::queue queue{ device, sycl::property::queue::in_order {} };
-    size_t n = b.size();
+    const size_t n = b.size();
+    const float e = accuracy * accuracy
     std::vector<float> x_curr(n, 0.0f);
-    std::vector<float> x_next(n, 0.0f);
 
     sycl::buffer<float, 1> a_buf{ a.data(), sycl::range<1>(a.size()) };
     sycl::buffer<float, 1> b_buf{ b.data(), sycl::range<1>(n) };
     sycl::buffer<float, 1> x_curr_buf{ x_curr.data(), sycl::range<1>(n) };
-    sycl::buffer<float, 1> x_next_buf{ x_next.data(), sycl::range<1>(n) };
+    sycl::buffer<float, 1> x_next_buf{ sycl::range<1>(n) };
 
     for (int iter = 0; iter < ITERATIONS; ++iter) {
         float it = 0.0f;
@@ -29,7 +29,7 @@ std::vector<float> JacobiAccONEAPI(
 
             auto reduct = sycl::reduction(diff_buf, cgh, sycl::plus<float>());
 
-            cgh.parallel_for(sycl::range<1>(n), [=](sycl::item<1> item) {
+            cgh.parallel_for(sycl::range<1>(n), reduct, [=](sycl::item<1> item, auto& error) {
                 size_t i = item[0];
                 float sum = 0.0f;
                 size_t size = i * n;
@@ -39,11 +39,12 @@ std::vector<float> JacobiAccONEAPI(
                     }
                 }
                 x_n_acc[i] = (b_acc[i] - sum) / a_acc[i * n + i];
+                error += (x_n_acc[i] - x_c_acc[i]) * (x_n_acc[i] - x_c_acc[i])
                 });
             });
        
             auto diff_host = diff_buf.get_host_access();
-            if (diff_host[0] < accuracy) {
+            if (diff_host[0] < e) {
                break;
             }
             std::swap(x_curr_buf, x_next_buf);
