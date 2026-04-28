@@ -1,5 +1,11 @@
-/usr/bin/ld: /tmp/icpx-0e7263955b/main-852f09.o: in function `Run(int, sycl::_V1::device)':
-main.cpp:(.text+0x311): undefined reference to `JacobiAccONEAPI(std::vector<float, std::allocator<float> > const&, std::vector<float, std::allocator<float> > const&, float, sycl::_V1::device)'
-/usr/bin/ld: /tmp/icpx-0e7263955b/main-852f09.o: in function `main':
-main.cpp:(.text+0xf05): undefined reference to `JacobiAccONEAPI(std::vector<float, std::allocator<float> > const&, std::vector<float, std::allocator<float> > const&, float, sycl::_V1::device)'
-icpx: error: linker command failed with exit code 1 (use -v to see invocation)
+/home/crazyproger/sandbox/oneapi-2026/3822B1FI2/3_acc_jacobi_oneapi/vyunova_ekaterina/acc_jacobi_oneapi.cpp:18:31: warning: parentheses were disambiguated as a function declaration [-Wvexing-parse]
+   18 |     sycl::buffer<float> x2_buf(sycl::range<1>(n));
+      |                               ^~~~~~~~~~~~~~~~~~~
+/home/crazyproger/sandbox/oneapi-2026/3822B1FI2/3_acc_jacobi_oneapi/vyunova_ekaterina/acc_jacobi_oneapi.cpp:18:32: note: add a pair of parentheses to declare a variable
+   18 |     sycl::buffer<float> x2_buf(sycl::range<1>(n));
+      |                                ^                
+      |                                (                )
+/home/crazyproger/sandbox/oneapi-2026/3822B1FI2/3_acc_jacobi_oneapi/vyunova_ekaterina/acc_jacobi_oneapi.cpp:21:26: error: cannot initialize a variable of type 'sycl::buffer<float> *' with an rvalue of type 'sycl::buffer<float> (*)(sycl::range<1>)'
+   21 |     sycl::buffer<float>* x_next = &x2_buf;
+      |                          ^        ~~~~~~~
+1 warning and 1 error generated.
