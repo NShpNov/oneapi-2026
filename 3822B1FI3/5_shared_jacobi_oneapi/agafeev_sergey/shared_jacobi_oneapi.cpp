@@ -7,69 +7,72 @@ std::vector<float> JacobiSharedONEAPI(
         float accuracy,
         sycl::device device) {
 
-    size_t n = b.size();
-    sycl::queue queue(device);
+    const size_t dim = b.size();
 
-    float* s_a = sycl::malloc_shared<float>(a.size(), queue);
-    float* s_b = sycl::malloc_shared<float>(b.size(), queue);
-    float* x_old = sycl::malloc_shared<float>(n, queue);
-    float* x_new = sycl::malloc_shared<float>(n, queue);
-    float* error = sycl::malloc_shared<float>(1, queue);
+    sycl::queue computeQueue(device, sycl::property::queue::in_order{});
 
-    for (size_t i = 0; i < a.size(); i++) s_a[i] = a[i];
-    for (size_t i = 0; i < b.size(); i++) s_b[i] = b[i];
+    std::vector<float> result(dim, 0.0f);
 
-    for (size_t i = 0; i < n; i++) x_old[i] = 0.0f;
+    float* devMatrixA = sycl::malloc_shared<float>(a.size(), computeQueue);
+    float* devRhs     = sycl::malloc_shared<float>(b.size(), computeQueue);
+    float* devXcurr   = sycl::malloc_shared<float>(dim, computeQueue);
+    float* devXnext   = sycl::malloc_shared<float>(dim, computeQueue);
+    float* devMaxDiff = sycl::malloc_shared<float>(1, computeQueue);
 
-    for (int iter = 0; iter < ITERATIONS; iter++) {
+    computeQueue.memcpy(devMatrixA, a.data(), a.size() * sizeof(float));
+    computeQueue.memcpy(devRhs,     b.data(), b.size() * sizeof(float));
+    computeQueue.memset(devXcurr,   0, sizeof(float) * dim);
+    computeQueue.memset(devXnext,   0, sizeof(float) * dim);
+    computeQueue.wait();
 
-        queue.parallel_for(sycl::range<1>(n), [=](sycl::id<1> i) {
-            float sum = 0.0f;
+    for (int iteration = 0; iteration < ITERATIONS; ++iteration) {
 
-            for (size_t j = 0; j < n; j++) {
-                if (j != i) {
-                    sum += s_a[i * n + j] * x_old[j];
+        *devMaxDiff = 0.0f;
+
+        auto maxReducer = sycl::reduction(
+            devMaxDiff,
+            sycl::maximum<float>());
+
+        computeQueue.parallel_for(
+            sycl::range<1>(dim),
+            maxReducer,
+            [=](sycl::id<1> idx, auto& diff) {
+
+                size_t i = idx[0];
+                float rowSum = devRhs[i];
+                const size_t rowOffset = i * dim;
+
+                #pragma unroll 4
+                for (size_t j = 0; j < dim; ++j) {
+                    if (j != i) {
+                        rowSum -= devMatrixA[rowOffset + j] * devXcurr[j];
+                    }
                 }
-            }
 
-            x_new[i] = (s_b[i] - sum) / s_a[i * n + i];
-        });
+                float newX = rowSum / devMatrixA[rowOffset + i];
+                devXnext[i] = newX;
 
-        *error = 0.0f;
+                float delta = sycl::fabs(newX - devXcurr[i]);
+                diff.combine(delta);
+            });
 
-        queue.parallel_for(sycl::range<1>(n), [=](sycl::id<1> i) {
-            float diff = sycl::fabs(x_new[i] - x_old[i]);
+        computeQueue.wait();
 
-            sycl::atomic_ref<float,
-                sycl::memory_order::relaxed,
-                sycl::memory_scope::device,
-                sycl::access::address_space::global_space> atom(*error);
-
-            float old = atom.load();
-            while (old < diff && !atom.compare_exchange_strong(old, diff));
-        });
-
-        queue.wait();
-
-        if (*error < accuracy) {
+        if (*devMaxDiff < accuracy) {
+            std::swap(devXcurr, devXnext);
             break;
         }
 
-        for (size_t i = 0; i < n; i++) {
-            x_old[i] = x_new[i];
-        }
+        std::swap(devXcurr, devXnext);
     }
 
-    std::vector<float> result(n);
-    for (size_t i = 0; i < n; i++) {
-        result[i] = x_new[i];
-    }
+    computeQueue.memcpy(result.data(), devXcurr, dim * sizeof(float)).wait();
 
-    sycl::free(s_a, queue);
-    sycl::free(s_b, queue);
-    sycl::free(x_old, queue);
-    sycl::free(x_new, queue);
-    sycl::free(error, queue);
+    sycl::free(devMatrixA, computeQueue);
+    sycl::free(devRhs,     computeQueue);
+    sycl::free(devXcurr,   computeQueue);
+    sycl::free(devXnext,   computeQueue);
+    sycl::free(devMaxDiff, computeQueue);
 
     return result;
 }
