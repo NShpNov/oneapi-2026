@@ -1,75 +1,102 @@
 #include "dev_jacobi_oneapi.h"
+#include <algorithm>
 #include <cmath>
+#include <vector>
 
 std::vector<float> JacobiDevONEAPI(
-        const std::vector<float>& a,
-        const std::vector<float>& b,
-        float accuracy,
-        sycl::device device) {
+        const std::vector<float>& a, const std::vector<float>& b,
+        float accuracy, sycl::device device) {
+    if (accuracy <= 0.0f) {
+        accuracy = 1e-6f;
+    }
 
-    size_t n = b.size();
-    sycl::queue queue(device);
+    const std::size_t n = b.size();
+    if (n == 0 || a.size() != n * n) {
+        return {};
+    }
 
-    float* d_a = sycl::malloc_device<float>(a.size(), queue);
-    float* d_b = sycl::malloc_device<float>(b.size(), queue);
-    float* d_x_old = sycl::malloc_device<float>(n, queue);
-    float* d_x_new = sycl::malloc_device<float>(n, queue);
-    float* d_error = sycl::malloc_device<float>(1, queue);
+    try {
+        sycl::queue q(device);
 
-    queue.memcpy(d_a, a.data(), a.size() * sizeof(float));
-    queue.memcpy(d_b, b.data(), b.size() * sizeof(float));
-    queue.memset(d_x_old, 0, n * sizeof(float));
-    queue.wait();
+        float* a_dev = sycl::malloc_device<float>(a.size(), q);
+        float* b_dev = sycl::malloc_device<float>(b.size(), q);
+        float* x0_dev = sycl::malloc_device<float>(n, q);
+        float* x1_dev = sycl::malloc_device<float>(n, q);
+        float* max_diff_dev = sycl::malloc_device<float>(1, q);
 
-    float error = 0.0f;
-
-    for (int iter = 0; iter < ITERATIONS; iter++) {
-
-        queue.parallel_for(sycl::range<1>(n), [=](sycl::id<1> i) {
-            float sum = 0.0f;
-
-            for (size_t j = 0; j < n; j++) {
-                if (j != i) {
-                    sum += d_a[i * n + j] * d_x_old[j];
-                }
-            }
-
-            d_x_new[i] = (d_b[i] - sum) / d_a[i * n + i];
-        });
-
-        queue.memset(d_error, 0, sizeof(float));
-
-        queue.parallel_for(sycl::range<1>(n), [=](sycl::id<1> i) {
-            float diff = sycl::fabs(d_x_new[i] - d_x_old[i]);
-
-            sycl::atomic_ref<float,
-                sycl::memory_order::relaxed,
-                sycl::memory_scope::device,
-                sycl::access::address_space::global_space> atom(*d_error);
-
-            float old = atom.load();
-            while (old < diff && !atom.compare_exchange_strong(old, diff));
-        });
-
-        queue.wait();
-
-        queue.memcpy(&error, d_error, sizeof(float)).wait();
-
-        if (error < accuracy) {
-            break;
+        if (a_dev == nullptr || b_dev == nullptr ||
+            x0_dev == nullptr || x1_dev == nullptr ||
+            max_diff_dev == nullptr) {
+            if (a_dev) sycl::free(a_dev, q);
+            if (b_dev) sycl::free(b_dev, q);
+            if (x0_dev) sycl::free(x0_dev, q);
+            if (x1_dev) sycl::free(x1_dev, q);
+            if (max_diff_dev) sycl::free(max_diff_dev, q);
+            return {};
         }
 
-        queue.memcpy(d_x_old, d_x_new, n * sizeof(float)).wait();
+        q.memcpy(a_dev, a.data(), sizeof(float) * a.size());
+        q.memcpy(b_dev, b.data(), sizeof(float) * b.size());
+        q.fill(x0_dev, 0.0f, n);
+        q.fill(x1_dev, 0.0f, n);
+        q.wait();
+
+        float* x_current = x0_dev;
+        float* x_next = x1_dev;
+
+        float max_diff_host = 0.0f;
+
+        for (int iter = 0; iter < ITERATIONS; ++iter) {
+            q.fill(max_diff_dev, 0.0f, 1).wait();
+
+            q.submit([&](sycl::handler& h) {
+                auto max_red = sycl::reduction(
+                    max_diff_dev, 0.0f, sycl::maximum<float>());
+
+                h.parallel_for(
+                    sycl::range<1>(n),
+                    max_red,
+                    [=](sycl::id<1> idx, auto& max_val) {
+                        const std::size_t i = idx[0];
+                        const std::size_t row = i * n;
+
+                        float sum = 0.0f;
+                        for (std::size_t j = 0; j < n; ++j) {
+                            if (j != i) {
+                                sum += a_dev[row + j] * x_current[j];
+                            }
+                        }
+
+                        const float new_value =
+                            (b_dev[i] - sum) / a_dev[row + i];
+
+                        x_next[i] = new_value;
+
+                        const float diff = sycl::fabs(new_value - x_current[i]);
+                        max_val.combine(diff);
+                    });
+            });
+
+            q.memcpy(&max_diff_host, max_diff_dev, sizeof(float)).wait();
+
+            std::swap(x_current, x_next);
+
+            if (max_diff_host < accuracy) {
+                break;
+            }
+        }
+
+        std::vector<float> result(n);
+        q.memcpy(result.data(), x_current, sizeof(float) * n).wait();
+
+        sycl::free(a_dev, q);
+        sycl::free(b_dev, q);
+        sycl::free(x0_dev, q);
+        sycl::free(x1_dev, q);
+        sycl::free(max_diff_dev, q);
+
+        return result;
+    } catch (const sycl::exception&) {
+        return {};
     }
-    
-    std::vector<float> result(n);
-    queue.memcpy(result.data(), d_x_new, n * sizeof(float)).wait();
-
-    sycl::free(d_a, queue);
-    sycl::free(d_b, queue);
-    sycl::free(d_x_old, queue);
-    sycl::free(d_x_new, queue);
-    sycl::free(d_error, queue);
-
-    return result;
 }
