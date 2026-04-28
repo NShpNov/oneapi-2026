@@ -1,5 +1,4 @@
-/usr/bin/ld: /tmp/icpx-8c5942619f/main-1d2976.o: in function `Run(int)':
-main.cpp:(.text+0x2d0): undefined reference to `JacobiKokkos(std::vector<float, std::allocator<float> > const&, std::vector<float, std::allocator<float> > const&, float)'
-/usr/bin/ld: /tmp/icpx-8c5942619f/main-1d2976.o: in function `main':
-main.cpp:(.text+0xb27): undefined reference to `JacobiKokkos(std::vector<float, std::allocator<float> > const&, std::vector<float, std::allocator<float> > const&, float)'
-icpx: error: linker command failed with exit code 1 (use -v to see invocation)
+/home/crazyproger/sandbox/oneapi-2026/3822B1FI2/9_jacobi_kokkos/vyunov_danila/jacobi_kokkos.cpp:1:10: fatal error: 'block_gemm_oneapi.h' file not found
+    1 | #include "block_gemm_oneapi.h"
+      |          ^~~~~~~~~~~~~~~~~~~~~
+1 error generated.
