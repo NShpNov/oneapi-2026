@@ -712,6 +712,7 @@ std::vector<float> JacobiKokkos(
 |3822B1FI2|plekhanov_daniil|0.2913|5|
 |3822B1FI1|grudzin_konstantin|0.3026|12|
 |3822B1FI3|solovyev_danila|0.3028|13|
+|3822B1FI2|vyunov_danila|0.3060|10|
 |3822B1FI3|kholin_kirill|0.3080|5|
 |3822B1FI1|drozhdinov_dmitriy|0.3305|4|
 |3822B1FI1|solovev_alexey|0.3317|3|
@@ -724,7 +725,6 @@ std::vector<float> JacobiKokkos(
 |3822B1FI1|kurakin_matvey|0.3797|10|
 |3822B1FI3|kolodkin_grigorii|0.4017|1|
 |3822B1FI3|frolova_elizaveta|0.4647|2|
-|3822B1FI2|vyunov_danila|BUILD FAILED|-|
 
 ## 6_block_gemm_oneapi (3072 elements)
 |Group|Name|Result|Rank|
@@ -963,10 +963,10 @@ Passed: 21
 |3822B1FI2|khokhlov_andrey|**9/9**|**523**|
 |3822B1FI2|plekhanov_daniil|**9/9**|**507**|
 |3822B1FI2|sdobnov_vladimir|**9/9**|**472**|
-|3822B1FI2|shkurinskaya_elena|**9/9**|**472**|
-|3822B1FI2|vyunov_danila|6/9|317|
+|3822B1FI2|shkurinskaya_elena|**9/9**|**471**|
+|3822B1FI2|vyunov_danila|7/9|365|
 |3822B1FI2|vyunova_ekaterina|7/9|385|
-|3822B1FI2|yasakova_tanya|**9/9**|**517**|
+|3822B1FI2|yasakova_tanya|**9/9**|**516**|
 
 Passed: 8
 
