@@ -1,15 +1,12 @@
-#ifndef __JACOBI_KOKKOS_H
-#define __JACOBI_KOKKOS_H
+#ifndef __BLOCK_GEMM_ONEAPI_H
+#define __BLOCK_GEMM_ONEAPI_H
 
 #include <vector>
 
-#include <Kokkos_Core.hpp>
+#include <sycl/sycl.hpp>
 
-#define ITERATIONS 1024
+std::vector<float> GemmBlockONEAPI(
+        const std::vector<float>& a, const std::vector<float>& b,
+        size_t size, sycl::device device);
 
-std::vector<float> JacobiKokkos(
-        const std::vector<float> a,
-        const std::vector<float> b,
-        float accuracy);
-
-#endif  // __JACOBI_KOKKOS_H
+#endif  // __BLOCK_GEMM_ONEAPI_H

@@ -1,67 +1,64 @@
-#include "jacobi_kokkos.h"
-#include <cmath>
+#include "block_gemm_oneapi.h"
 
-std::vector<float> JacobiKokkos(
-        const std::vector<float> a,
-        const std::vector<float> b,
-        float accuracy) {
+std::vector<float> GemmBlockONEAPI(
+        const std::vector<float>& a, const std::vector<float>& b,
+        size_t size, sycl::device device) {
+    constexpr size_t BLOCK_SIZE = 16;
+    const size_t total = size * size;
 
-    using ExecSpace = Kokkos::SYCL;
-    using MemSpace  = Kokkos::SYCLDeviceUSMSpace;
+    std::vector<float> result(total, 0.0f);
 
-    const int n = static_cast<int>(b.size());
+    sycl::queue q(device);
 
-    Kokkos::View<float*, MemSpace> a_dev("a_dev", n * n);
-    Kokkos::View<float*, MemSpace> b_dev("b_dev", n);
-    Kokkos::View<float*, MemSpace> x_dev("x_dev", n);
-    Kokkos::View<float*, MemSpace> x_new_dev("x_new_dev", n);
+    float* a_dev = sycl::malloc_device<float>(total, q);
+    float* b_dev = sycl::malloc_device<float>(total, q);
+    float* c_dev = sycl::malloc_device<float>(total, q);
 
-    auto a_host = Kokkos::create_mirror_view(a_dev);
-    auto b_host = Kokkos::create_mirror_view(b_dev);
+    q.memcpy(a_dev, a.data(), total * sizeof(float));
+    q.memcpy(b_dev, b.data(), total * sizeof(float));
+    q.memset(c_dev, 0, total * sizeof(float)).wait();
 
-    for (int i = 0; i < n * n; ++i) a_host(i) = a[i];
-    for (int i = 0; i < n;     ++i) b_host(i) = b[i];
+    sycl::range<2> global_range(size, size);
+    sycl::range<2> local_range(BLOCK_SIZE, BLOCK_SIZE);
 
-    Kokkos::deep_copy(a_dev, a_host);
-    Kokkos::deep_copy(b_dev, b_host);
-    Kokkos::deep_copy(x_dev, 0.0f);
-    Kokkos::deep_copy(x_new_dev, 0.0f);
+    q.submit([&](sycl::handler& cgh) {
+        sycl::local_accessor<float, 2> tile_a(local_range, cgh);
+        sycl::local_accessor<float, 2> tile_b(local_range, cgh);
 
-    for (int iter = 0; iter < ITERATIONS; ++iter) {
-        Kokkos::parallel_for(
-            "JacobiUpdate",
-            Kokkos::RangePolicy<ExecSpace>(0, n),
-            KOKKOS_LAMBDA(int i) {
+        cgh.parallel_for(
+            sycl::nd_range<2>(global_range, local_range),
+            [=](sycl::nd_item<2> item) {
+                const size_t row = item.get_global_id(0);
+                const size_t col = item.get_global_id(1);
+                const size_t local_row = item.get_local_id(0);
+                const size_t local_col = item.get_local_id(1);
+
                 float sum = 0.0f;
-                for (int j = 0; j < n; ++j) {
-                    if (j != i) {
-                        sum += a_dev(i * n + j) * x_dev(j);
+
+                for (size_t block = 0; block < size / BLOCK_SIZE; ++block) {
+                    tile_a[local_row][local_col] =
+                        a_dev[row * size + block * BLOCK_SIZE + local_col];
+                    tile_b[local_row][local_col] =
+                        b_dev[(block * BLOCK_SIZE + local_row) * size + col];
+
+                    item.barrier(sycl::access::fence_space::local_space);
+
+                    for (size_t k = 0; k < BLOCK_SIZE; ++k) {
+                        sum += tile_a[local_row][k] * tile_b[k][local_col];
                     }
+
+                    item.barrier(sycl::access::fence_space::local_space);
                 }
-                x_new_dev(i) = (b_dev(i) - sum) / a_dev(i * n + i);
-            }
-        );
 
-        float max_diff = 0.0f;
-        Kokkos::parallel_reduce(
-            "JacobiError",
-            Kokkos::RangePolicy<ExecSpace>(0, n),
-            KOKKOS_LAMBDA(int i, float& local_max) {
-                float diff = Kokkos::fabs(x_new_dev(i) - x_dev(i));
-                if (diff > local_max) local_max = diff;
-            },
-            Kokkos::Max<float>(max_diff)
-        );
+                c_dev[row * size + col] = sum;
+            });
+    }).wait();
 
-        std::swap(x_dev, x_new_dev);
+    q.memcpy(result.data(), c_dev, total * sizeof(float)).wait();
 
-        if (max_diff < accuracy) break;
-    }
-
-    auto x_host = Kokkos::create_mirror_view_and_copy(Kokkos::HostSpace(), x_dev);
-
-    std::vector<float> result(n);
-    for (int i = 0; i < n; ++i) result[i] = x_host(i);
+    sycl::free(a_dev, q);
+    sycl::free(b_dev, q);
+    sycl::free(c_dev, q);
 
     return result;
 }
