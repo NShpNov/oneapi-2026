@@ -57,7 +57,7 @@ std::vector<float> JacobiDevONEAPI(
 
         // Compute max |x_new - x| via reduction
         q.submit([&](sycl::handler& h) {
-            auto red = sycl::reduction(d_diff, h, 0.0f, sycl::maximum<float>());
+            auto red = sycl::reduction(d_diff, 0.0f, sycl::maximum<float>());
             h.parallel_for(sycl::range<1>(n), red, [=](sycl::id<1> id, auto& mx) {
                 mx.combine(sycl::fabs(d_xnew[id] - d_x[id]));
             });
