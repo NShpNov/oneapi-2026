@@ -5,7 +5,7 @@
 #include <algorithm>
 #include <string>
 
-static std::string make_key(const std::string& word) {
+static std::string makeKey(const std::string& word) {
     std::array<int, 26> freq = { 0 };
 
     for (char c : word) {
@@ -28,7 +28,7 @@ void Permutations(dictionary_t& dictionary) {
     std::unordered_map<std::string, std::string> cache;
 
     for (const auto& [word, _] : dictionary) {
-        auto key = make_key(word);
+        auto key = makeKey(word);
         cache[word] = key;
         groups[key].push_back(word);
     }
