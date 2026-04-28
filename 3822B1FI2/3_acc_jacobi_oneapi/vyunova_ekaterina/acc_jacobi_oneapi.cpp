@@ -3,66 +3,54 @@
 #include <cmath>
 
 std::vector<float> JacobiAccONEAPI(
-        const std::vector<float> a, const std::vector<float> b,
+        const std::vector<float>& a, const std::vector<float>& b,
         float accuracy, sycl::device device) {
-
     const int n = static_cast<int>(b.size());
 
-    sycl::queue queue(device);
+    std::vector<float> x_curr(n, 0.0f);
+    std::vector<float> x_next(n, 0.0f);
 
-    sycl::buffer<float> a_buf(a.data(), a.size());
-    sycl::buffer<float> b_buf(b.data(), b.size());
+    sycl::queue q(device);
 
-    std::vector<float> x_init(n, 0.0f);
-    sycl::buffer<float> x1_buf(x_init.data(), x_init.size());
-    sycl::buffer<float> x2_buf(sycl::range<1>(n));
-
-    sycl::buffer<float>* x_cur = &x1_buf;
-    sycl::buffer<float>* x_next = &x2_buf;
+    sycl::buffer<float> a_buf(a.data(), sycl::range<1>(a.size()));
+    sycl::buffer<float> b_buf(b.data(), sycl::range<1>(n));
+    sycl::buffer<float> curr_buf(x_curr.data(), sycl::range<1>(n));
+    sycl::buffer<float> next_buf(x_next.data(), sycl::range<1>(n));
 
     for (int iter = 0; iter < ITERATIONS; ++iter) {
-        sycl::buffer<float> diff_buf(sycl::range<1>(1));
+        q.submit([&](sycl::handler& h) {
+            auto a_acc   = a_buf.get_access<sycl::access::mode::read>(h);
+            auto b_acc   = b_buf.get_access<sycl::access::mode::read>(h);
+            auto x_acc   = curr_buf.get_access<sycl::access::mode::read>(h);
+            auto xn_acc  = next_buf.get_access<sycl::access::mode::write>(h);
 
-        queue.submit([&](sycl::handler& cgh) {
-            auto a_acc   = a_buf.get_access<sycl::access::mode::read>(cgh);
-            auto b_acc   = b_buf.get_access<sycl::access::mode::read>(cgh);
-            auto cur_acc = x_cur->get_access<sycl::access::mode::read>(cgh);
-            auto nxt_acc = x_next->get_access<sycl::access::mode::write>(cgh);
-            auto red     = sycl::reduction(diff_buf, cgh, sycl::maximum<float>());
-
-            cgh.parallel_for(sycl::range<1>(n), red, [=](sycl::id<1> id, auto& max_diff) {
-                int i = static_cast<int>(id[0]);
+            h.parallel_for(sycl::range<1>(n), [=](sycl::id<1> idx) {
+                int i = idx[0];
                 float sum = 0.0f;
-
                 for (int j = 0; j < n; ++j) {
                     if (j != i) {
-                        sum += a_acc[i * n + j] * cur_acc[j];
+                        sum += a_acc[i * n + j] * x_acc[j];
                     }
                 }
-
-                float new_val = (b_acc[i] - sum) / a_acc[i * n + i];
-                nxt_acc[i] = new_val;
-                max_diff.combine(sycl::fabs(new_val - cur_acc[i]));
+                xn_acc[i] = (b_acc[i] - sum) / a_acc[i * n + i];
             });
         }).wait();
 
-        float max_diff = 0.0f;
+        bool converged = true;
         {
-            sycl::host_accessor diff_acc(diff_buf, sycl::read_only);
-            max_diff = diff_acc[0];
+            auto curr_acc = curr_buf.get_host_access();
+            auto next_acc = next_buf.get_host_access();
+            for (int i = 0; i < n; ++i) {
+                if (std::fabs(next_acc[i] - curr_acc[i]) >= accuracy) {
+                    converged = false;
+                }
+                curr_acc[i] = next_acc[i];
+            }
         }
 
-        std::swap(x_cur, x_next);
-
-        if (max_diff < accuracy) {
-            break;
-        }
+        if (converged) break;
     }
 
-    sycl::host_accessor result_acc(*x_cur, sycl::read_only);
-    std::vector<float> result(n);
-    for (int i = 0; i < n; ++i) {
-        result[i] = result_acc[i];
-    }
-    return result;
+    auto result = curr_buf.get_host_access();
+    return std::vector<float>(result.get_pointer(), result.get_pointer() + n);
 }
