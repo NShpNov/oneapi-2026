@@ -53,7 +53,7 @@ std::vector<float> JacobiKokkos(
             Kokkos::Max<float>(max_diff)
         );
 
-        Kokkos::swap(x_dev, x_new_dev);
+        std::swap(x_dev, x_new_dev);
 
         if (max_diff < accuracy) break;
     }
