@@ -777,6 +777,7 @@ std::vector<float> JacobiKokkos(
 |3822B1FI3|budazhapova_ekaterina|1.0220|12|
 |3822B1FI1|vasenkov_andrey|1.7514|20|
 |3822B1FI1|beresnev_anton|1.9800|16|
+|3822B1FI3|ulyanov_daniil|2.0831|15|
 |3822B1FI3|kolodkin_grigorii|2.1427|1|
 |3822B1FI2|vyunov_danila|3.1434|7|
 |3822B1FI1|shulpin_ilya|3.5330|7|
@@ -984,7 +985,7 @@ Passed: 10
 |3822B1FI3|ekaterina_kozlova|**9/9**|**466**|
 |3822B1FI3|frolova_elizaveta|**9/9**|**483**|
 |3822B1FI3|kholin_kirill|**9/9**|**460**|
-|3822B1FI3|kolodkin_grigorii|**9/9**|**482**|
+|3822B1FI3|kolodkin_grigorii|**9/9**|**481**|
 |3822B1FI3|koshkin_nikita|**9/9**|**432**|
 |3822B1FI3|kudryashova_irina|**9/9**|**471**|
 |3822B1FI3|lopatin_ilya|**9/9**|**486**|
@@ -992,7 +993,7 @@ Passed: 10
 |3822B1FI3|shmidt_olga|**9/9**|**446**|
 |3822B1FI3|solovyev_danila|**9/9**|**425**|
 |3822B1FI3|sozonov_ilya|**9/9**|**479**|
-|3822B1FI3|ulyanov_daniil|5/9|223|
+|3822B1FI3|ulyanov_daniil|6/9|260|
 
 Passed: 14
 
