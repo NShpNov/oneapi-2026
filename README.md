@@ -604,6 +604,7 @@ std::vector<float> JacobiKokkos(
 |3822B1FI2|bessonov_egor|0.2871|1|
 |3822B1FI3|chizhov_maxim|0.2964|6|
 |3822B1FI1|kurakin_matvey|0.2979|10|
+|3822B1FI3|ulyanov_daniil|0.3043|15|
 |3822B1FI1|kabalova_valeria|0.3109|16|
 |3822B1FI1|ionova_ekaterina|0.3151|8|
 |3822B1FI2|plekhanov_daniil|0.3158|5|
@@ -975,21 +976,21 @@ Passed: 10
 ## 3822B1FI3
 |Group|Name|Passed|Score|
 |-----|----|------|-----|
-|3822B1FI3|agafeev_sergey|**9/9**|**422**|
+|3822B1FI3|agafeev_sergey|**9/9**|**421**|
 |3822B1FI3|budazhapova_ekaterina|**9/9**|**426**|
 |3822B1FI3|chizhov_maxim|**9/9**|**443**|
 |3822B1FI3|ekaterina_kozlova|**9/9**|**468**|
-|3822B1FI3|frolova_elizaveta|**9/9**|**486**|
-|3822B1FI3|kholin_kirill|**9/9**|**462**|
-|3822B1FI3|kolodkin_grigorii|**9/9**|**485**|
-|3822B1FI3|koshkin_nikita|**9/9**|**433**|
+|3822B1FI3|frolova_elizaveta|**9/9**|**485**|
+|3822B1FI3|kholin_kirill|**9/9**|**461**|
+|3822B1FI3|kolodkin_grigorii|**9/9**|**484**|
+|3822B1FI3|koshkin_nikita|**9/9**|**432**|
 |3822B1FI3|kudryashova_irina|**9/9**|**471**|
-|3822B1FI3|lopatin_ilya|**9/9**|**489**|
+|3822B1FI3|lopatin_ilya|**9/9**|**488**|
 |3822B1FI3|lysov_ivan|**9/9**|**465**|
-|3822B1FI3|shmidt_olga|**9/9**|**447**|
+|3822B1FI3|shmidt_olga|**9/9**|**446**|
 |3822B1FI3|solovyev_danila|**9/9**|**425**|
-|3822B1FI3|sozonov_ilya|**9/9**|**480**|
-|3822B1FI3|ulyanov_daniil|2/9|96|
+|3822B1FI3|sozonov_ilya|**9/9**|**479**|
+|3822B1FI3|ulyanov_daniil|3/9|140|
 
 Passed: 14
 
