@@ -509,6 +509,7 @@ std::vector<float> JacobiKokkos(
 |3822B1FI1|drozhdinov_dmitriy|0.1613|3|
 |3822B1FI3|ekaterina_kozlova|0.1614|8|
 |3822B1FI1|vershinina_olga|0.1746|15|
+|3822B1FI2|polyakov_alexey|0.1774|11|
 |3822B1FI2|sdobnov_vladimir|0.1834|5|
 |3822B1FI3|kholin_kirill|0.1891|5|
 |3822B1FI3|frolova_elizaveta|0.1951|4|
@@ -535,6 +536,7 @@ std::vector<float> JacobiKokkos(
 |3822B1FI1|suvorov_dmitrii|0.0024|13|
 |3822B1FI1|beresnev_anton|0.3821|17|
 |3822B1FI2|sdobnov_vladimir|0.4246|10|
+|3822B1FI2|polyakov_alexey|0.4445|11|
 |3822B1FI1|chistov_alexey|0.4474|3|
 |**REF**|**REF**|**0.4723**|**-**|
 |3822B1FI1|rezantseva_anastasia|0.5868|5|
@@ -626,6 +628,7 @@ std::vector<float> JacobiKokkos(
 |3822B1FI1|chistov_alexey|0.3639|3|
 |3822B1FI1|vasenkov_andrey|0.3916|19|
 |3822B1FI2|yasakova_tanya|0.3980|2|
+|3822B1FI2|polyakov_alexey|0.4437|11|
 |3822B1FI2|sdobnov_vladimir|0.4597|4|
 |3822B1FI1|drozhdinov_dmitriy|0.5052|2|
 
@@ -660,6 +663,7 @@ std::vector<float> JacobiKokkos(
 |3822B1FI1|kuznetsov_mikhail|0.3006|13|
 |3822B1FI1|kabalova_valeria|0.3078|17|
 |3822B1FI3|lopatin_ilya|0.3083|3|
+|3822B1FI2|polyakov_alexey|0.3150|11|
 |3822B1FI3|kolodkin_grigorii|0.3165|1|
 |3822B1FI2|shkurinskaya_elena|0.3225|6|
 |3822B1FI3|kholin_kirill|0.3246|4|
@@ -712,6 +716,7 @@ std::vector<float> JacobiKokkos(
 |3822B1FI1|beresnev_anton|0.2819|15|
 |3822B1FI1|shurigin_sergey|0.2827|5|
 |3822B1FI3|kudryashova_irina|0.2831|8|
+|3822B1FI2|polyakov_alexey|0.2837|11|
 |3822B1FI3|lysov_ivan|0.2910|4|
 |3822B1FI2|plekhanov_daniil|0.2913|5|
 |3822B1FI1|grudzin_konstantin|0.3026|12|
@@ -767,6 +772,7 @@ std::vector<float> JacobiKokkos(
 |3822B1FI1|korobeinikov_arseny|0.9126|18|
 |3822B1FI2|plekhanov_daniil|0.9128|5|
 |3822B1FI1|shurigin_sergey|0.9134|4|
+|3822B1FI2|polyakov_alexey|0.9134|11|
 |**REF**|**REF**|**0.9144**|**-**|
 |3822B1FI1|suvorov_dmitrii|0.9173|12|
 |3822B1FI1|chistov_alexey|0.9184|2|
@@ -803,6 +809,7 @@ std::vector<float> JacobiKokkos(
 |3822B1FI3|shmidt_olga|0.2935|12|
 |3822B1FI3|koshkin_nikita|0.2949|10|
 |3822B1FI2|vyunova_ekaterina|0.2954|6|
+|3822B1FI2|polyakov_alexey|0.2956|11|
 |3822B1FI1|kabalova_valeria|0.2994|18|
 |3822B1FI3|ulyanov_daniil|0.2996|15|
 |3822B1FI2|vyunov_danila|0.3006|7|
@@ -836,6 +843,7 @@ std::vector<float> JacobiKokkos(
 ## 8_integral_kokkos (65536 elements)
 |Group|Name|Result|Rank|
 |-----|----|------|----|
+|3822B1FI2|polyakov_alexey|0.0002|11|
 |3822B1FI2|sdobnov_vladimir|0.0002|10|
 |3822B1FI3|lysov_ivan|0.0002|7|
 |3822B1FI3|agafeev_sergey|0.0003|14|
@@ -923,6 +931,7 @@ std::vector<float> JacobiKokkos(
 |3822B1FI1|vasenkov_andrey|0.3217|21|
 |3822B1FI3|kholin_kirill|0.3248|5|
 |3822B1FI3|ulyanov_daniil|0.3269|15|
+|3822B1FI2|polyakov_alexey|0.3287|11|
 |3822B1FI3|ekaterina_kozlova|0.3293|4|
 |3822B1FI2|shkurinskaya_elena|0.3314|7|
 |3822B1FI3|frolova_elizaveta|0.3331|2|
@@ -966,18 +975,19 @@ Passed: 21
 ## 3822B1FI2
 |Group|Name|Passed|Score|
 |-----|----|------|-----|
-|3822B1FI2|bessonov_egor|**9/9**|**524**|
-|3822B1FI2|dormidontov_egor|**9/9**|**485**|
-|3822B1FI2|guseynov_emil|**9/9**|**512**|
-|3822B1FI2|khokhlov_andrey|**9/9**|**521**|
-|3822B1FI2|plekhanov_daniil|**9/9**|**507**|
-|3822B1FI2|sdobnov_vladimir|**9/9**|**470**|
-|3822B1FI2|shkurinskaya_elena|**9/9**|**470**|
-|3822B1FI2|vyunov_danila|**9/9**|**467**|
-|3822B1FI2|vyunova_ekaterina|**9/9**|**481**|
-|3822B1FI2|yasakova_tanya|**9/9**|**513**|
+|3822B1FI2|bessonov_egor|**9/9**|**520**|
+|3822B1FI2|dormidontov_egor|**9/9**|**481**|
+|3822B1FI2|guseynov_emil|**9/9**|**508**|
+|3822B1FI2|khokhlov_andrey|**9/9**|**518**|
+|3822B1FI2|plekhanov_daniil|**9/9**|**503**|
+|3822B1FI2|polyakov_alexey|**9/9**|**441**|
+|3822B1FI2|sdobnov_vladimir|**9/9**|**465**|
+|3822B1FI2|shkurinskaya_elena|**9/9**|**465**|
+|3822B1FI2|vyunov_danila|**9/9**|**461**|
+|3822B1FI2|vyunova_ekaterina|**9/9**|**478**|
+|3822B1FI2|yasakova_tanya|**9/9**|**506**|
 
-Passed: 10
+Passed: 11
 
 ## 3822B1FI3
 |Group|Name|Passed|Score|
@@ -1000,7 +1010,7 @@ Passed: 10
 
 Passed: 15
 
-**Total Passed: 46**
+**Total Passed: 47**
 
 ---
 *Maximum Score: 576 (64 per task)*
