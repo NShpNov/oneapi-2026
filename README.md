@@ -922,6 +922,7 @@ std::vector<float> JacobiKokkos(
 |3822B1FI1|beskhmelnova_kseniya|0.3214|1|
 |3822B1FI1|vasenkov_andrey|0.3217|21|
 |3822B1FI3|kholin_kirill|0.3248|5|
+|3822B1FI3|ulyanov_daniil|0.3269|15|
 |3822B1FI3|ekaterina_kozlova|0.3293|4|
 |3822B1FI2|shkurinskaya_elena|0.3314|7|
 |3822B1FI3|frolova_elizaveta|0.3331|2|
@@ -984,22 +985,22 @@ Passed: 10
 |3822B1FI3|agafeev_sergey|**9/9**|**421**|
 |3822B1FI3|budazhapova_ekaterina|**9/9**|**424**|
 |3822B1FI3|chizhov_maxim|**9/9**|**440**|
-|3822B1FI3|ekaterina_kozlova|**9/9**|**465**|
-|3822B1FI3|frolova_elizaveta|**9/9**|**482**|
+|3822B1FI3|ekaterina_kozlova|**9/9**|**464**|
+|3822B1FI3|frolova_elizaveta|**9/9**|**481**|
 |3822B1FI3|kholin_kirill|**9/9**|**458**|
-|3822B1FI3|kolodkin_grigorii|**9/9**|**479**|
+|3822B1FI3|kolodkin_grigorii|**9/9**|**478**|
 |3822B1FI3|koshkin_nikita|**9/9**|**431**|
 |3822B1FI3|kudryashova_irina|**9/9**|**470**|
 |3822B1FI3|lopatin_ilya|**9/9**|**485**|
 |3822B1FI3|lysov_ivan|**9/9**|**463**|
 |3822B1FI3|shmidt_olga|**9/9**|**445**|
-|3822B1FI3|solovyev_danila|**9/9**|**424**|
+|3822B1FI3|solovyev_danila|**9/9**|**423**|
 |3822B1FI3|sozonov_ilya|**9/9**|**479**|
-|3822B1FI3|ulyanov_daniil|8/9|348|
+|3822B1FI3|ulyanov_daniil|**9/9**|**388**|
 
-Passed: 14
+Passed: 15
 
-**Total Passed: 45**
+**Total Passed: 46**
 
 ---
 *Maximum Score: 576 (64 per task)*
