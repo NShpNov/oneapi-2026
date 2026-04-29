@@ -890,6 +890,7 @@ std::vector<float> JacobiKokkos(
 |**REF**|**REF**|**0.2679**|**-**|
 |3822B1FI2|plekhanov_daniil|0.2807|6|
 |3822B1FI2|khokhlov_andrey|0.2865|3|
+|3822B1FI2|vyunov_danila|0.2869|10|
 |3822B1FI2|dormidontov_egor|0.2895|8|
 |3822B1FI3|koshkin_nikita|0.2975|8|
 |3822B1FI3|budazhapova_ekaterina|0.2980|9|
@@ -924,7 +925,6 @@ std::vector<float> JacobiKokkos(
 |3822B1FI1|drozhdinov_dmitriy|0.3698|8|
 |3822B1FI3|kolodkin_grigorii|0.3787|1|
 |3822B1FI1|solovev_alexey|0.3892|3|
-|3822B1FI2|vyunov_danila|BUILD FAILED|-|
 
 # Tasks Done
 ## 3822B1FI1
@@ -957,18 +957,18 @@ Passed: 21
 ## 3822B1FI2
 |Group|Name|Passed|Score|
 |-----|----|------|-----|
-|3822B1FI2|bessonov_egor|**9/9**|**525**|
-|3822B1FI2|dormidontov_egor|**9/9**|**486**|
+|3822B1FI2|bessonov_egor|**9/9**|**524**|
+|3822B1FI2|dormidontov_egor|**9/9**|**485**|
 |3822B1FI2|guseynov_emil|**9/9**|**512**|
 |3822B1FI2|khokhlov_andrey|**9/9**|**521**|
 |3822B1FI2|plekhanov_daniil|**9/9**|**507**|
-|3822B1FI2|sdobnov_vladimir|**9/9**|**471**|
-|3822B1FI2|shkurinskaya_elena|**9/9**|**471**|
-|3822B1FI2|vyunov_danila|8/9|415|
-|3822B1FI2|vyunova_ekaterina|**9/9**|**482**|
-|3822B1FI2|yasakova_tanya|**9/9**|**514**|
+|3822B1FI2|sdobnov_vladimir|**9/9**|**470**|
+|3822B1FI2|shkurinskaya_elena|**9/9**|**470**|
+|3822B1FI2|vyunov_danila|**9/9**|**467**|
+|3822B1FI2|vyunova_ekaterina|**9/9**|**481**|
+|3822B1FI2|yasakova_tanya|**9/9**|**513**|
 
-Passed: 9
+Passed: 10
 
 ## 3822B1FI3
 |Group|Name|Passed|Score|
@@ -990,7 +990,7 @@ Passed: 9
 
 Passed: 14
 
-**Total Passed: 44**
+**Total Passed: 45**
 
 ---
 *Maximum Score: 576 (64 per task)*

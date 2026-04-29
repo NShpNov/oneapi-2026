@@ -1,4 +1,0 @@
-/home/crazyproger/sandbox/oneapi-2026/3822B1FI2/9_jacobi_kokkos/vyunov_danila/jacobi_kokkos.cpp:1:10: fatal error: 'block_gemm_oneapi.h' file not found
-    1 | #include "block_gemm_oneapi.h"
-      |          ^~~~~~~~~~~~~~~~~~~~~
-1 error generated.
