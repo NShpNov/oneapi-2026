@@ -20,7 +20,7 @@ float IntegralKokkos(float start, float end, int count) {
         KOKKOS_LAMBDA(const int i, const int j, double &local_sum) {
             const double x = a + (static_cast<double>(i) + 0.5) * dx;
             const double y = a + (static_cast<double>(j) + 0.5) * dy;
-            local_sum += std::sin(x) * std::cos(y) * dx * dy;
+            local_sum += Kokkos::sin(x) * Kokkos::cos(y) * dx * dy;
         },
         sum);
 

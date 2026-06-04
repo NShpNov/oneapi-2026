@@ -6,25 +6,33 @@
 #include <vector>
 
 void Permutations(dictionary_t& dictionary) {
-    std::vector<std::string> chars;
-    chars.reserve(dictionary.size());
-    for (const auto& chr : dictionary) {
-        chars.push_back(chr.first);
-    }
-    std::unordered_map<std::string, std::vector<std::string>> groups;
-    groups.reserve(chars.size());
-    for (const auto& s : chars) {
-        std::string sorted = s;
+    using entry_t = dictionary_t::value_type;
+
+    std::unordered_map<std::string, std::vector<entry_t*>> groups;
+    groups.reserve(dictionary.size());
+
+    for (auto& entry : dictionary) {
+        entry.second.clear();
+
+        std::string sorted = entry.first;
         std::sort(sorted.begin(), sorted.end());
-        groups[sorted].push_back(s);
+
+        groups[std::move(sorted)].push_back(&entry);
     }
-    for (auto& chr : dictionary) {
-        std::string sorted = chr.first;
-        std::sort(sorted.begin(), sorted.end());
-        const auto& group = groups[sorted];
-        for (const auto& member : group) {
-            if (member != chr.first) {
-                chr.second.push_back(member);
+
+    for (auto& [_, members] : groups) {
+        if (members.size() < 2) {
+            continue;
+        }
+
+        for (entry_t* current : members) {
+            auto& out = current->second;
+            out.reserve(members.size() - 1);
+
+            for (entry_t* other : members) {
+                if (current != other) {
+                    out.push_back(other->first);
+                }
             }
         }
     }

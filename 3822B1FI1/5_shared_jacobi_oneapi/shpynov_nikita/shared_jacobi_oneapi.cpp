@@ -1,80 +1,108 @@
 #include "shared_jacobi_oneapi.h"
-
+constexpr size_t LOCAL_SIZE = 64;
 std::vector<float> JacobiSharedONEAPI(
-        const std::vector<float>& a, const std::vector<float>& b,
-        float accuracy, sycl::device device) {
+    const std::vector<float>& a,
+    const std::vector<float>& b,
+    float accuracy,
+    sycl::device device)
+{
     const size_t dim = b.size();
     if (dim == 0) return {};
     if (a.size() != dim * dim) return {};
+    if (accuracy < 0.0f) accuracy = 0.0f;
 
-    sycl::queue q(device);
+    const float eps2 = accuracy * accuracy;
 
-    float *shared_a = sycl::malloc_shared<float>(dim * dim, q);
-    float *shared_b = sycl::malloc_shared<float>(dim, q);
-    float *shared_x = sycl::malloc_shared<float>(dim, q);
-    float *shared_x_next = sycl::malloc_shared<float>(dim, q);
-    if (!shared_a || !shared_b || !shared_x || !shared_x_next) {
-        sycl::free(shared_a, q);
-        sycl::free(shared_b, q);
-        sycl::free(shared_x, q);
-        sycl::free(shared_x_next, q);
+    sycl::queue q(device, sycl::property::queue::in_order{});
+
+    float* A   = sycl::malloc_shared<float>(dim * dim, q);
+    float* B   = sycl::malloc_shared<float>(dim, q);
+    float* X0  = sycl::malloc_shared<float>(dim, q);
+    float* X1  = sycl::malloc_shared<float>(dim, q);
+    float* INV = sycl::malloc_shared<float>(dim, q);
+    float* ERR = sycl::malloc_shared<float>(1, q);
+
+    if (!A || !B || !X0 || !X1 || !INV || !ERR) {
+        if (A) sycl::free(A, q);
+        if (B) sycl::free(B, q);
+        if (X0) sycl::free(X0, q);
+        if (X1) sycl::free(X1, q);
+        if (INV) sycl::free(INV, q);
+        if (ERR) sycl::free(ERR, q);
         throw std::bad_alloc();
     }
 
-    for (size_t i = 0; i < dim * dim; ++i) shared_a[i] = a[i];
-    for (size_t i = 0; i < dim; ++i) shared_b[i] = b[i];
-    for (size_t i = 0; i < dim; ++i) shared_x[i] = 0.0f;
+    for (size_t i = 0; i < dim * dim; ++i) A[i] = a[i];
+    for (size_t i = 0; i < dim; ++i) B[i] = b[i];
 
-    std::vector<float> x_host(dim);
-    std::vector<float> xnext_host(dim);
+    for (size_t i = 0; i < dim; ++i) {
+        float d = A[i * dim + i];
+        INV[i] = (d != 0.0f) ? 1.0f / d : 0.0f;
+        X0[i] = 0.0f;
+        X1[i] = 0.0f;
+    }
 
-    for (int i = 0; i < ITERATIONS; ++i) {
-        q.submit([&](sycl::handler &h) {
-            h.parallel_for(sycl::range<1>(dim), [=](sycl::id<1> idx) {
-                size_t i = idx[0];
-                float sum = 0.0f;
-                size_t base = i * dim;
-                for (size_t j = 0; j < dim; ++j) {
-                    if (j == i) continue;
-                    sum += shared_a[base + j] * shared_x[j];
-                }
-                float diag = shared_a[base + i];
-                if (diag == 0.0f) {
-                    shared_x_next[i] = 0.0f;
-                } else {
-                    shared_x_next[i] = (shared_b[i] - sum) / diag;
-                }
-            });
+    q.wait();
+
+    auto global = sycl::range<1>((dim + LOCAL_SIZE - 1) / LOCAL_SIZE * LOCAL_SIZE);
+
+    float* x_old = X0;
+    float* x_new = X1;
+
+    for (int iter = 0; iter < ITERATIONS; ++iter) {
+
+        q.fill(ERR, 0.0f, 1).wait();
+
+        sycl::event e = q.submit([&](sycl::handler& h) {
+
+            auto red = sycl::reduction(ERR, sycl::plus<float>());
+
+            h.parallel_for(
+                sycl::nd_range<1>(sycl::range<1>(global), sycl::range<1>(LOCAL_SIZE)),
+                red,
+                [=](sycl::nd_item<1> it, auto& sum)
+                {
+                    size_t i = it.get_global_id(0);
+                    if (i >= dim) return;
+
+                    const size_t row = i * dim;
+
+                    float diag_inv = INV[i];
+
+                    float sigma = 0.0f;
+
+                    for (size_t j = 0; j < dim; ++j) {
+                        sigma += A[row + j] * x_old[j];
+                    }
+
+                    float new_x = (B[i] - (sigma - A[row + i] * x_old[i])) * diag_inv;
+
+                    x_new[i] = new_x;
+
+                    float diff = new_x - x_old[i];
+                    sum += diff * diff;
+                });
         });
 
-        q.wait();
-        float maxdiff = 0.0f;
-        for (size_t i = 0; i < dim; ++i) {
-            x_host[i] = shared_x[i];
-            xnext_host[i] = shared_x_next[i];
-            float d = std::fabs(xnext_host[i] - x_host[i]);
-            if (d > maxdiff) maxdiff = d;
-        }
+        e.wait();
 
-        if (maxdiff < accuracy) {
-            std::vector<float> result(dim);
-            for (size_t i = 0; i < dim; ++i) 
-                result[i] = shared_x_next[i];
-            sycl::free(shared_a, q);
-            sycl::free(shared_b, q);
-            sycl::free(shared_x, q);
-            sycl::free(shared_x_next, q);
-            return result;
-        }
-        for (size_t i = 0; i < dim; ++i) shared_x[i] = shared_x_next[i];
+        float err = *ERR;
+
+        if (err < eps2) break;
+
+        std::swap(x_old, x_new);
     }
 
     std::vector<float> result(dim);
     for (size_t i = 0; i < dim; ++i)
-        result[i] = shared_x_next[i];
-    sycl::free(shared_a, q);
-    sycl::free(shared_b, q);
-    sycl::free(shared_x, q);
-    sycl::free(shared_x_next, q);
+        result[i] = x_old[i];
+
+    sycl::free(A, q);
+    sycl::free(B, q);
+    sycl::free(X0, q);
+    sycl::free(X1, q);
+    sycl::free(INV, q);
+    sycl::free(ERR, q);
+
     return result;
 }

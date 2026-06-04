@@ -49,7 +49,7 @@ std::vector<float> JacobiKokkos(
         double maxdiff = 0.0;
         Kokkos::parallel_reduce("jacobi_diff", Kokkos::RangePolicy<Kokkos::DefaultExecutionSpace>(0, (int)dim), KOKKOS_LAMBDA(const int ii, double &local_max) {
             const int i = ii;
-            double d = std::fabs((double)x_next(i) - (double)x(i));
+            double d = Kokkos::abs((double)x_next(i) - (double)x(i));
             if (d > local_max) local_max = d;
         }, Kokkos::Max<double>(maxdiff));
 
