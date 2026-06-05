@@ -11,7 +11,7 @@ std::vector<float> JacobiKokkos(
     if (dim == 0) return {};
     if (a.size() != dim * dim) return {};
 
-    Kokkos::View<float**, Kokkos::LayoutLeft, Kokkos::SYCLDeviceUSMSpace> A("A", n, n);
+    Kokkos::View<float**, Kokkos::LayoutLeft, Kokkos::SYCLDeviceUSMSpace> A("A", dim, dim);
     Kokkos::View<float*, Kokkos::SYCLDeviceUSMSpace> B("B", dim);
     Kokkos::View<float*, Kokkos::SYCLDeviceUSMSpace> x("x", dim);
     Kokkos::View<float*, Kokkos::SYCLDeviceUSMSpace> x_next("x_next", dim);
@@ -19,10 +19,10 @@ std::vector<float> JacobiKokkos(
     auto A_h = Kokkos::create_mirror_view(A);
     auto B_h = Kokkos::create_mirror_view(B);
 
-    for (int i = 0; i < n; ++i) {
+    for (int i = 0; i < dim; ++i) {
         B_h(i) = b[i];
-        for (int j = 0; j < n; ++j) {
-            A_h(i, j) = a[i * n + j];
+        for (int j = 0; j < dim; ++j) {
+            A_h(i, j) = a[i * dim + j];
         }
     };
     Kokkos::deep_copy(A, A_h);
