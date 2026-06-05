@@ -32,7 +32,7 @@ std::vector<float> JacobiKokkos(
     Kokkos::deep_copy(x_next, 0.0f);
 
     for (int iter = 0; iter < ITERATIONS; ++iter) {
-        Kokkos::parallel_for("jacobi_update", Kokkos::RangePolicy<Kokkos::DefaultExecutionSpace>(0, dim), KOKKOS_LAMBDA(const int i) {
+        Kokkos::parallel_for("jacobi_update", Kokkos::RangePolicy<Kokkos::SYCL>(0, dim), KOKKOS_LAMBDA(const int i) {
             float sum = 0.0f;
             for (int j = 0; j < dim; ++j) {
                 if (j == i) continue;
@@ -49,7 +49,7 @@ std::vector<float> JacobiKokkos(
         Kokkos::fence();
 
         float maxdiff = 0.0;
-        Kokkos::parallel_reduce("jacobi_diff", Kokkos::RangePolicy<Kokkos::DefaultExecutionSpace>(0, dim), KOKKOS_LAMBDA(const int i, float &local_max) {
+        Kokkos::parallel_reduce("jacobi_diff", Kokkos::RangePolicy<Kokkos::SYCL>(0, dim), KOKKOS_LAMBDA(const int i, float &local_max) {
             float d = Kokkos::fabs(x_next(i) - x(i));
             if (d > local_max) local_max = d;
         }, Kokkos::Max<float>(maxdiff));
