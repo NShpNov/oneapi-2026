@@ -30,7 +30,6 @@ std::vector<float> JacobiKokkos(
 
     Kokkos::deep_copy(x, 0.0f);
     Kokkos::deep_copy(x_next, 0.0f);
-
     for (int iter = 0; iter < ITERATIONS; ++iter) {
         Kokkos::parallel_for("jacobi_update", Kokkos::RangePolicy<Kokkos::SYCL>(0, dim), KOKKOS_LAMBDA(const int i) {
             float sum = 0.0f;
@@ -38,12 +37,8 @@ std::vector<float> JacobiKokkos(
                 if (j == i) continue;
                 sum += A(i, j) * x(j);
             }
-            float diag = A(i, i);
-            if (diag == 0.0f) {
-                x_next(i) = x(i);
-            } else {
-                x_next(i) = (B(i) - sum) / diag;
-            }
+
+            x_next(i) = (B(i) - sum) / A(i, i);
         });
 
         Kokkos::fence();
@@ -55,13 +50,12 @@ std::vector<float> JacobiKokkos(
         }, Kokkos::Max<float>(maxdiff));
 
         Kokkos::fence();
-
+        Kokkos::kokkos_swap(x, x_next);
         if (maxdiff < accuracy) {
             break;
         }
-        Kokkos::kokkos_swap(x, x_next);
-    }
 
+    }
     auto res_h = Kokkos::create_mirror_view_and_copy(Kokkos::HostSpace(), x);
     std::vector<float> result(dim);
     for (int i = 0; i < dim; ++i) result[i] = res_h(i);
