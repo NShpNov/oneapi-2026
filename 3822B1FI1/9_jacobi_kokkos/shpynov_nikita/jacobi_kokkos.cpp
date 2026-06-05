@@ -7,7 +7,7 @@ std::vector<float> JacobiKokkos(
         const std::vector<float>& a,
         const std::vector<float>& b,
         float accuracy) {
-    const size_t dim = b.size();
+     const int dim = static_cast<int>(b.size());
     if (dim == 0) return {};
     if (a.size() != dim * dim) return {};
 
@@ -23,16 +23,16 @@ std::vector<float> JacobiKokkos(
     Kokkos::deep_copy(A, A_h);
     Kokkos::deep_copy(B, B_h);
 
-    auto x_h = Kokkos::create_mirror_view(x);
-    for (size_t i = 0; i < dim; ++i) x_h(i) = 0.0f;
-    Kokkos::deep_copy(x, x_h);
+    Kokkos::parallel_for("init_x", Kokkos::RangePolicy<Kokkos::DefaultExecutionSpace>(0, dim),
+        KOKKOS_LAMBDA(const int i) {
+            x(i) = 0.0f;
+        });
 
     for (int iter = 0; iter < ITERATIONS; ++iter) {
-        Kokkos::parallel_for("jacobi_update", Kokkos::RangePolicy<Kokkos::DefaultExecutionSpace>(0, (int)dim), KOKKOS_LAMBDA(const int ii) {
-            const int i = ii;
+        Kokkos::parallel_for("jacobi_update", Kokkos::RangePolicy<Kokkos::DefaultExecutionSpace>(0, dim), KOKKOS_LAMBDA(const int i) {
             float sum = 0.0f;
-            const int base = i * (int)dim;
-            for (int j = 0; j < (int)dim; ++j) {
+            const int base = i * dim;
+            for (int j = 0; j < dim; ++j) {
                 if (j == i) continue;
                 sum += A(base + j) * x(j);
             }
@@ -46,20 +46,17 @@ std::vector<float> JacobiKokkos(
 
         Kokkos::fence();
 
-        double maxdiff = 0.0;
-        Kokkos::parallel_reduce("jacobi_diff", Kokkos::RangePolicy<Kokkos::DefaultExecutionSpace>(0, (int)dim), KOKKOS_LAMBDA(const int ii, double &local_max) {
-            const int i = ii;
-            double d = Kokkos::abs((double)x_next(i) - (double)x(i));
+        float maxdiff = 0.0;
+        Kokkos::parallel_reduce("jacobi_diff", Kokkos::RangePolicy<Kokkos::DefaultExecutionSpace>(0, dim), KOKKOS_LAMBDA(const int i, float &local_max) {
+            float d = Kokkos::abs(x_next(i) - x(i));
             if (d > local_max) local_max = d;
-        }, Kokkos::Max<double>(maxdiff));
-
+        }, Kokkos::Max<float>(maxdiff));
         Kokkos::fence();
-
-        if (maxdiff < static_cast<double>(accuracy)) {
+        if (maxdiff < accuracy) {
             auto res_h = Kokkos::create_mirror_view(x_next);
             Kokkos::deep_copy(res_h, x_next);
             std::vector<float> result(dim);
-            for (size_t i = 0; i < dim; ++i) result[i] = res_h(i);
+            for (int i = 0; i < dim; ++i) result[i] = res_h(i);
             return result;
         }
 

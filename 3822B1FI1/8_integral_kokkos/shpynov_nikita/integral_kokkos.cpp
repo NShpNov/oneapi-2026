@@ -1,30 +1,38 @@
 #include "integral_kokkos.h"
+#include <Kokkos_MathematicalFunctions.hpp>
 
 float IntegralKokkos(float start, float end, int count) {
     if (count <= 0) return 0.0f;
-
-    const double a = static_cast<double>(start);
-    const double b = static_cast<double>(end);
+        bool need_finalize = false;
+    if (!Kokkos::is_initialized()) {
+        Kokkos::initialize();
+        need_finalize = true;
+    }
+    const float a = start;
+    const float b = end;
     const int n = count;
-    const double dx = (b - a) / static_cast<double>(n);
-    const double dy = dx;
-    double sum = 0.0;
 
-    using policy_type = Kokkos::MDRangePolicy<Kokkos::SYCL,Kokkos::Rank<2>>;
+    const float dx = (b - a) / static_cast<float>(n);
+    const float dy = dx;
 
-    policy_type policy({0, 0}, {n, n});
+    const float base = a + 0.5f * dx;
+
+    float sum = 0.0f;
 
     Kokkos::parallel_reduce(
         "integral_midpoint",
-        policy,
-        KOKKOS_LAMBDA(const int i, const int j, double &local_sum) {
-            const double x = a + (static_cast<double>(i) + 0.5) * dx;
-            const double y = a + (static_cast<double>(j) + 0.5) * dy;
-            local_sum += Kokkos::sin(x) * Kokkos::cos(y) * dx * dy;
+        Kokkos::RangePolicy<Kokkos::SYCL>(0, n * n),
+        KOKKOS_LAMBDA(const int idx, float &local_sum) {
+            const int i = idx / n;
+            const int j = idx % n;
+
+            const float x = base + static_cast<float>(i) * dx;
+            const float y = base + static_cast<float>(j) * dy;
+            local_sum += Kokkos::sin(x) * Kokkos::cos(y);
         },
         sum);
-
-    Kokkos::fence();
-
-    return static_cast<float>(sum);
+    if (need_finalize) {
+        Kokkos::finalize();
+    }
+    return sum * dx * dy;
 }
